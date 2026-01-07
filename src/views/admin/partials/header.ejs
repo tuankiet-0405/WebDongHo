@@ -132,6 +132,11 @@
                 </a>
 
                 <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2">Hệ thống</p>
+                <a href="/admin/reports"
+                    class="sidebar-link <%= typeof currentPage !== 'undefined' && currentPage === 'reports' ? 'active' : '' %>">
+                    <iconify-icon icon="lucide:file-text" width="18"></iconify-icon>
+                    Báo cáo doanh thu
+                </a>
                 <a href="/admin/settings"
                     class="sidebar-link <%= typeof currentPage !== 'undefined' && currentPage === 'settings' ? 'active' : '' %>">
                     <iconify-icon icon="lucide:settings" width="18"></iconify-icon>

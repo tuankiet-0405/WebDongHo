@@ -373,3 +373,128 @@ exports.sendWelcomeEmail = async (user) => {
 };
 
 module.exports = exports;
+
+// Contact confirmation email
+exports.sendContactConfirmation = async (name, email, message) => {
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #0B1020 0%, #070A12 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="color: #D6B25E; margin: 0; font-size: 32px;">CHRONOS</h1>
+                <p style="color: #fff; margin: 10px 0 0;">Xác nhận liên hệ</p>
+            </div>
+            
+            <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+                <h2 style="color: #0B1020; margin-top: 0;">Cảm ơn bạn đã liên hệ, ${name}! 📧</h2>
+                
+                <p>Chúng tôi đã nhận được tin nhắn của bạn:</p>
+                
+                <div style="background: white; border-left: 4px solid #D6B25E; padding: 20px; margin: 20px 0;">
+                    <p style="margin: 0; color: #666;"><strong>Nội dung:</strong></p>
+                    <p style="margin: 10px 0 0;">${message.replace(/\n/g, '<br>')}</p>
+                </div>
+                
+                <p>Đội ngũ CHRONOS sẽ sớm xem xét và phản hồi với bạn trong vòng <strong>24 giờ</strong>.</p>
+                
+                <p style="color: #666; font-size: 14px; margin-top: 30px;">
+                    Nếu bạn có thêm câu hỏi, vui lòng liên hệ:<br>
+                    <strong>Email:</strong> support@chronos.com<br>
+                    <strong>Hotline:</strong> 1900 1234 56
+                </p>
+            </div>
+            
+            <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+                <p>&copy; 2024 CHRONOS Watch Store. All rights reserved.</p>
+            </div>
+        </body>
+        </html>
+    `;
+
+    return await sendEmail({
+        to: email,
+        subject: 'Xác nhận liên hệ - CHRONOS',
+        html
+    });
+};
+
+// Contact notification email to admin
+exports.sendContactNotification = async (contact) => {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@chronos.com';
+    const subjectMap = {
+        'general': 'Thắc mắc chung',
+        'product': 'Tư vấn sản phẩm',
+        'order': 'Theo dõi đơn hàng',
+        'warranty': 'Bảo hành',
+        'other': 'Khác'
+    };
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #0B1020 0%, #070A12 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="color: #D6B25E; margin: 0; font-size: 32px;">CHRONOS</h1>
+                <p style="color: #fff; margin: 10px 0 0;">Tin nhắn liên hệ mới</p>
+            </div>
+            
+            <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+                <h2 style="color: #0B1020; margin-top: 0;">📬 Tin nhắn liên hệ mới</h2>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px 0; font-weight: bold; color: #0B1020; width: 30%;">Tên:</td>
+                        <td style="padding: 12px 0;">${contact.name}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px 0; font-weight: bold; color: #0B1020;">Email:</td>
+                        <td style="padding: 12px 0;"><a href="mailto:${contact.email}">${contact.email}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px 0; font-weight: bold; color: #0B1020;">Điện thoại:</td>
+                        <td style="padding: 12px 0;">${contact.phone || 'Không cung cấp'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px 0; font-weight: bold; color: #0B1020;">Chủ đề:</td>
+                        <td style="padding: 12px 0;">${subjectMap[contact.subject] || contact.subject}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 0; font-weight: bold; color: #0B1020;">Ngày gửi:</td>
+                        <td style="padding: 12px 0;">${new Date(contact.createdAt).toLocaleString('vi-VN')}</td>
+                    </tr>
+                </table>
+                
+                <div style="background: white; border-left: 4px solid #D6B25E; padding: 20px; margin: 20px 0;">
+                    <p style="margin: 0; color: #666;"><strong>Nội dung:</strong></p>
+                    <p style="margin: 10px 0 0;">${contact.message.replace(/\n/g, '<br>')}</p>
+                </div>
+                
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="${process.env.APP_URL || 'http://localhost:3000'}/admin/contacts" 
+                       style="display: inline-block; background: #D6B25E; color: #0B1020; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                        XEM CHI TIẾT
+                    </a>
+                </p>
+            </div>
+            
+            <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+                <p>&copy; 2024 CHRONOS Watch Store. All rights reserved.</p>
+            </div>
+        </body>
+        </html>
+    `;
+
+    return await sendEmail({
+        to: adminEmail,
+        subject: `[LIÊN HỆ] ${subjectMap[contact.subject] || contact.subject} - ${contact.name}`,
+        html
+    });
+};

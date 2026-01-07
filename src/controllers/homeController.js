@@ -1,4 +1,5 @@
-const { Product, Category } = require('../models');
+const { Product, Category, Contact } = require('../models');
+const emailService = require('../services/emailService');
 
 // Trang chủ
 exports.index = async (req, res) => {
@@ -9,7 +10,7 @@ exports.index = async (req, res) => {
             .populate('category');
 
         // Sản phẩm mới
-        const newProducts = await Product.find({ isNew: true, isActive: true })
+        const newProducts = await Product.find({ isNewArrival: true, isActive: true })
             .sort({ createdAt: -1 })
             .limit(8)
             .populate('category');
@@ -56,7 +57,31 @@ exports.sendContact = async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
 
-        // TODO: Lưu vào database hoặc gửi email
+        // Validate required fields
+        if (!name || !email || !message) {
+            req.flash('error_msg', 'Vui lòng điền đầy đủ thông tin bắt buộc');
+            return res.redirect('/contact');
+        }
+
+        // Save to database
+        const contact = new Contact({
+            name,
+            email,
+            phone,
+            subject,
+            message
+        });
+        await contact.save();
+
+        // Send confirmation email to customer
+        await emailService.sendContactConfirmation(name, email, message).catch(err => {
+            console.error('Failed to send confirmation email:', err);
+        });
+
+        // Send notification email to admin
+        await emailService.sendContactNotification(contact).catch(err => {
+            console.error('Failed to send admin notification:', err);
+        });
 
         req.flash('success_msg', 'Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất!');
         res.redirect('/contact');

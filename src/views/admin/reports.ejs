@@ -1,0 +1,346 @@
+<%- include('./partials/header', { currentPage: 'reports' }) %>
+
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+    <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Báo cáo doanh thu</h1>
+        <p class="text-sm text-slate-500 mt-1">Xuất báo cáo doanh thu theo khoảng thời gian</p>
+    </div>
+</div>
+
+<!-- Report Filter -->
+<div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm animate-fade-in-up" style="animation-delay: 100ms;">
+    <form id="reportForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Từ ngày</label>
+                <input type="date" id="startDate" name="startDate" required class="input-field w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Đến ngày</label>
+                <input type="date" id="endDate" name="endDate" required class="input-field w-full">
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button type="button" id="generateBtn" class="btn-primary">Xem báo cáo</button>
+            <button type="button" id="exportBtn" class="btn-secondary">Tải CSV</button>
+            <button type="button" id="printBtn" class="btn-secondary">In báo cáo</button>
+        </div>
+    </form>
+</div>
+
+<!-- Report Summary -->
+<div id="reportContainer" class="hidden space-y-4">
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 animate-fade-in-up" style="animation-delay: 150ms;">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-blue-600">Tổng đơn hàng</p>
+                    <p id="totalOrders" class="text-2xl font-bold text-blue-900 mt-1">0</p>
+                </div>
+                <iconify-icon icon="lucide:shopping-cart" class="text-blue-400" width="32"></iconify-icon>
+            </div>
+        </div>
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-green-600">Tổng doanh thu</p>
+                    <p id="totalRevenue" class="text-2xl font-bold text-green-900 mt-1">0 ₫</p>
+                </div>
+                <iconify-icon icon="lucide:trending-up" class="text-green-400" width="32"></iconify-icon>
+            </div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-purple-600">Tổng sản phẩm</p>
+                    <p id="totalItems" class="text-2xl font-bold text-purple-900 mt-1">0</p>
+                </div>
+                <iconify-icon icon="lucide:package" class="text-purple-400" width="32"></iconify-icon>
+            </div>
+        </div>
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-orange-600">Trung bình/đơn</p>
+                    <p id="avgPerOrder" class="text-2xl font-bold text-orange-900 mt-1">0 ₫</p>
+                </div>
+                <iconify-icon icon="lucide:bar-chart-2" class="text-orange-400" width="32"></iconify-icon>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-fade-in-up" style="animation-delay: 200ms;">
+        <!-- Payment Methods Chart -->
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Phương thức thanh toán</h3>
+            <div id="paymentChart" class="space-y-3">
+                <!-- Chart will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Order Status Chart -->
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Trạng thái đơn hàng</h3>
+            <div id="statusChart" class="space-y-3">
+                <!-- Chart will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up" style="animation-delay: 250ms;">
+        <div class="p-4 border-b border-slate-200">
+            <h3 class="text-lg font-semibold text-slate-900">Top sản phẩm bán chạy</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                    <tr>
+                        <th class="px-4 py-3">Tên sản phẩm</th>
+                        <th class="px-4 py-3 text-right">Số lượng bán</th>
+                        <th class="px-4 py-3 text-right">Doanh thu</th>
+                        <th class="px-4 py-3 text-right">% Tổng doanh thu</th>
+                    </tr>
+                </thead>
+                <tbody id="topProductsTable">
+                    <!-- Products will be rendered here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up" style="animation-delay: 300ms;">
+        <div class="p-4 border-b border-slate-200">
+            <h3 class="text-lg font-semibold text-slate-900">Chi tiết đơn hàng</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                    <tr>
+                        <th class="px-4 py-3">Mã đơn</th>
+                        <th class="px-4 py-3">Khách hàng</th>
+                        <th class="px-4 py-3">Email</th>
+                        <th class="px-4 py-3">Ngày tạo</th>
+                        <th class="px-4 py-3">Trạng thái</th>
+                        <th class="px-4 py-3 text-right">Tổng tiền</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTable">
+                    <!-- Orders will be rendered here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Empty State -->
+<div id="emptyState" class="bg-white rounded-xl p-12 border border-slate-200 shadow-sm text-center">
+    <iconify-icon icon="lucide:file-text" class="text-slate-300 mx-auto" width="48"></iconify-icon>
+    <p class="text-slate-500 mt-4">Chọn khoảng thời gian để xem báo cáo</p>
+</div>
+
+<script>
+    const statusColors = {
+        'pending': '#f59e0b',
+        'confirmed': '#3b82f6',
+        'processing': '#8b5cf6',
+        'shipping': '#06b6d4',
+        'delivered': '#10b981',
+        'cancelled': '#ef4444',
+        'refunded': '#6366f1'
+    };
+
+    const statusLabels = {
+        'pending': 'Chờ xác nhận',
+        'confirmed': 'Đã xác nhận',
+        'processing': 'Đang xử lý',
+        'shipping': 'Đang giao',
+        'delivered': 'Đã giao',
+        'cancelled': 'Đã hủy',
+        'refunded': 'Đã hoàn tiền'
+    };
+
+    const paymentLabels = {
+        'cod': 'Thanh toán khi nhận',
+        'bank_transfer': 'Chuyển khoản',
+        'credit_card': 'Thẻ tín dụng',
+        'momo': 'Ví MoMo',
+        'vnpay': 'VNPay'
+    };
+
+    // Set default dates (last 30 days)
+    const today = new Date();
+    const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    document.getElementById('endDate').valueAsDate = today;
+    document.getElementById('startDate').valueAsDate = last30Days;
+
+    // Generate report
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Vui lòng chọn khoảng thời gian');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/admin/reports/sales-data?startDate=${startDate}&endDate=${endDate}`);
+            const result = await response.json();
+
+            if (!result.success) {
+                alert(result.message);
+                return;
+            }
+
+            displayReport(result.data);
+        } catch (error) {
+            console.error('Error generating report:', error);
+            alert('Có lỗi xảy ra: ' + error.message);
+        }
+    });
+
+    // Export CSV
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Vui lòng chọn khoảng thời gian');
+            return;
+        }
+
+        window.location.href = `/admin/reports/export-sales?startDate=${startDate}&endDate=${endDate}`;
+    });
+
+    // Print report
+    document.getElementById('printBtn').addEventListener('click', () => {
+        window.print();
+    });
+
+    function displayReport(data) {
+        const { summary, orders } = data;
+
+        // Update summary cards
+        document.getElementById('totalOrders').textContent = summary.totalOrders;
+        document.getElementById('totalRevenue').textContent = formatCurrency(summary.totalRevenue);
+        document.getElementById('totalItems').textContent = summary.totalItems;
+        
+        const avgPerOrder = summary.totalOrders > 0 ? summary.totalRevenue / summary.totalOrders : 0;
+        document.getElementById('avgPerOrder').textContent = formatCurrency(avgPerOrder);
+
+        // Display payment methods chart
+        const paymentChart = document.getElementById('paymentChart');
+        paymentChart.innerHTML = '';
+        const maxPayment = Math.max(...Object.values(summary.paymentMethods), 1);
+        Object.entries(summary.paymentMethods).forEach(([method, count]) => {
+            const percentage = (count / summary.totalOrders * 100).toFixed(1);
+            const width = (count / maxPayment * 100).toFixed(1);
+            paymentChart.innerHTML += `
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-slate-700">${paymentLabels[method] || method}</span>
+                        <span class="text-sm font-semibold text-slate-900">${count} (${percentage}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-blue-500 h-2 rounded-full" style="width: ${width}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Display order status chart
+        const statusChart = document.getElementById('statusChart');
+        statusChart.innerHTML = '';
+        const maxStatus = Math.max(...Object.values(summary.orderStatuses), 1);
+        Object.entries(summary.orderStatuses).forEach(([status, count]) => {
+            const percentage = (count / summary.totalOrders * 100).toFixed(1);
+            const width = (count / maxStatus * 100).toFixed(1);
+            statusChart.innerHTML += `
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-slate-700">${statusLabels[status] || status}</span>
+                        <span class="text-sm font-semibold text-slate-900">${count} (${percentage}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="h-2 rounded-full" style="background-color: ${statusColors[status]}; width: ${width}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Display top products
+        const topProductsTable = document.getElementById('topProductsTable');
+        topProductsTable.innerHTML = '';
+        summary.topProducts.forEach((product, index) => {
+            const percentage = (product.revenue / summary.totalRevenue * 100).toFixed(1);
+            topProductsTable.innerHTML += `
+                <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                    <td class="px-4 py-3 font-medium text-slate-900">${index + 1}. ${product.productName}</td>
+                    <td class="px-4 py-3 text-right text-slate-700">${product.quantity}</td>
+                    <td class="px-4 py-3 text-right text-slate-900 font-semibold">${formatCurrency(product.revenue)}</td>
+                    <td class="px-4 py-3 text-right">
+                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">${percentage}%</span>
+                    </td>
+                </tr>
+            `;
+        });
+
+        // Display orders
+        const ordersTable = document.getElementById('ordersTable');
+        ordersTable.innerHTML = '';
+        orders.forEach(order => {
+            const date = new Date(order.createdAt).toLocaleDateString('vi-VN');
+            const statusColor = statusColors[order.status] || '#999';
+            ordersTable.innerHTML += `
+                <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                    <td class="px-4 py-3 font-medium text-slate-900">${order.orderNumber}</td>
+                    <td class="px-4 py-3 text-slate-700">${order.customer.name}</td>
+                    <td class="px-4 py-3 text-slate-700">${order.customer.email}</td>
+                    <td class="px-4 py-3 text-slate-700">${date}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded text-xs font-medium text-white" style="background-color: ${statusColor}">${statusLabels[order.status] || order.status}</span>
+                    </td>
+                    <td class="px-4 py-3 text-right font-semibold text-slate-900">${formatCurrency(order.totalAmount)}</td>
+                </tr>
+            `;
+        });
+
+        // Show report container
+        document.getElementById('reportContainer').classList.remove('hidden');
+        document.getElementById('emptyState').classList.add('hidden');
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(value || 0);
+    }
+</script>
+
+<style>
+    @media print {
+        #reportForm, .btn-primary, .btn-secondary, #printBtn {
+            display: none !important;
+        }
+        
+        .bg-gradient-to-br {
+            background: white !important;
+            border: 1px solid #000 !important;
+        }
+        
+        body {
+            background: white;
+        }
+    }
+</style>
+
+<%- include('./partials/footer') %>

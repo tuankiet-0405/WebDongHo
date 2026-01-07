@@ -1,5 +1,6 @@
 const { User, Product, Category, Order, Coupon, Review } = require('../models');
 const emailService = require('../services/emailService');
+const reportService = require('../services/reportService');
 
 // Dashboard
 exports.dashboard = async (req, res) => {
@@ -570,5 +571,69 @@ exports.settings = async (req, res) => {
     } catch (error) {
         console.error('Admin settings error:', error);
         res.status(500).render('errors/500', { title: 'Lỗi server' });
+    }
+};
+
+// ==================== REPORTS ====================
+exports.reportPage = async (req, res) => {
+    try {
+        res.render('admin/reports', {
+            title: 'Báo cáo doanh thu | Admin'
+        });
+    } catch (error) {
+        console.error('Report page error:', error);
+        res.status(500).render('errors/500', { title: 'Lỗi server' });
+    }
+};
+
+exports.getSalesReportData = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng chọn khoảng thời gian'
+            });
+        }
+
+        const report = await reportService.getSalesReport(startDate, endDate);
+
+        res.json({
+            success: true,
+            data: report
+        });
+    } catch (error) {
+        console.error('Get sales report error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Có lỗi xảy ra: ' + error.message
+        });
+    }
+};
+
+exports.exportSalesReport = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng chọn khoảng thời gian'
+            });
+        }
+
+        const csv = await reportService.generateCSV(startDate, endDate);
+        const filename = `sales-report-${new Date().getTime()}.csv`;
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send('\ufeff' + csv);
+    } catch (error) {
+        console.error('Export sales report error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Có lỗi xảy ra: ' + error.message
+        });
     }
 };

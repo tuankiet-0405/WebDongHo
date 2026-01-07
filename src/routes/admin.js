@@ -49,4 +49,9 @@ router.delete('/reviews/:id', adminController.deleteReview);
 // Settings
 router.get('/settings', adminController.settings);
 
+// Reports
+router.get('/reports', adminController.reportPage);
+router.get('/reports/sales-data', adminController.getSalesReportData);
+router.get('/reports/export-sales', adminController.exportSalesReport);
+
 module.exports = router;

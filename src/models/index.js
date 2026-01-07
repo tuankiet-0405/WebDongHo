@@ -4,6 +4,7 @@ const Category = require('./Category');
 const Order = require('./Order');
 const Review = require('./Review');
 const Coupon = require('./Coupon');
+const Contact = require('./Contact');
 
 module.exports = {
     User,
@@ -11,5 +12,6 @@ module.exports = {
     Category,
     Order,
     Review,
-    Coupon
+    Coupon,
+    Contact
 };

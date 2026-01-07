@@ -15,7 +15,6 @@ exports.add = async (req, res) => {
     try {
         const { productId, quantity = 1 } = req.body;
         const qty = parseInt(quantity);
-
         const product = await Product.findById(productId);
 
         if (!product || !product.isActive) {

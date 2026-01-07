@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài khoản | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-8 bg-navy">
+            <div class="container mx-auto px-6">
+                <h1 class="text-3xl md:text-4xl font-display font-semibold text-white">Tài khoản của tôi</h1>
+                <p class="text-muted mt-2">Xin chào, <span class="text-gold">
+                        <%= user.name %>
+                    </span></p>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark min-h-[60vh]">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-4 gap-8">
+
+                    <!-- Sidebar -->
+                    <div class="lg:col-span-1">
+                        <div class="glass-panel rounded-2xl p-6 sticky top-32">
+                            <div class="text-center mb-6">
+                                <div
+                                    class="w-20 h-20 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <iconify-icon icon="lucide:user" class="text-gold text-3xl"></iconify-icon>
+                                </div>
+                                <h3 class="text-white font-medium">
+                                    <%= user.name %>
+                                </h3>
+                                <p class="text-muted text-sm">
+                                    <%= user.email %>
+                                </p>
+                            </div>
+                            <nav class="space-y-2">
+                                <a href="/users/profile"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gold/10 text-gold">
+                                    <iconify-icon icon="lucide:user-circle"></iconify-icon>Thông tin tài khoản
+                                </a>
+                                <a href="/users/orders"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:package"></iconify-icon>Đơn hàng
+                                </a>
+                                <a href="/users/wishlist"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:heart"></iconify-icon>Yêu thích
+                                </a>
+                                <a href="/users/addresses"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:map-pin"></iconify-icon>Địa chỉ
+                                </a>
+                                <div class="border-t border-white/10 my-4"></div>
+                                <a href="/auth/logout"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors">
+                                    <iconify-icon icon="lucide:log-out"></iconify-icon>Đăng xuất
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="lg:col-span-3 space-y-8">
+
+                        <% if (typeof success_msg !=='undefined' && success_msg && success_msg.length> 0) { %>
+                            <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                                <p class="text-green-400 text-sm">
+                                    <%= success_msg %>
+                                </p>
+                            </div>
+                            <% } %>
+
+                                <% if (typeof error_msg !=='undefined' && error_msg && error_msg.length> 0) { %>
+                                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                                        <p class="text-red-400 text-sm">
+                                            <%= error_msg %>
+                                        </p>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- Personal Info -->
+                                        <div class="glass-panel rounded-2xl p-8">
+                                            <h2
+                                                class="text-xl font-display font-medium text-white mb-6 flex items-center gap-3">
+                                                <iconify-icon icon="lucide:user" class="text-gold"></iconify-icon>Thông
+                                                tin cá nhân
+                                            </h2>
+                                            <form action="/users/profile" method="POST" class="space-y-6">
+                                                <div class="grid md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <label class="block text-sm text-muted mb-2">Họ và tên</label>
+                                                        <input type="text" name="name" value="<%= user.name %>" required
+                                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm text-muted mb-2">Email</label>
+                                                        <input type="email" value="<%= user.email %>" disabled
+                                                            class="w-full bg-dark/50 border border-white/5 rounded-lg px-4 py-3 text-muted cursor-not-allowed">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm text-muted mb-2">Số điện thoại</label>
+                                                    <input type="tel" name="phone" value="<%= user.phone || '' %>"
+                                                        class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none"
+                                                        placeholder="0912 345 678">
+                                                </div>
+                                                <button type="submit"
+                                                    class="bg-gold hover:bg-[#C5A354] text-dark font-bold py-3 px-8 rounded-lg text-sm uppercase tracking-wide">
+                                                    Cập nhật thông tin
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <!-- Change Password -->
+                                        <div class="glass-panel rounded-2xl p-8">
+                                            <h2
+                                                class="text-xl font-display font-medium text-white mb-6 flex items-center gap-3">
+                                                <iconify-icon icon="lucide:lock" class="text-gold"></iconify-icon>Đổi
+                                                mật khẩu
+                                            </h2>
+                                            <form action="/users/change-password" method="POST" class="space-y-6">
+                                                <div>
+                                                    <label class="block text-sm text-muted mb-2">Mật khẩu hiện
+                                                        tại</label>
+                                                    <input type="password" name="currentPassword" required
+                                                        class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                                                </div>
+                                                <div class="grid md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <label class="block text-sm text-muted mb-2">Mật khẩu
+                                                            mới</label>
+                                                        <input type="password" name="newPassword" required minlength="6"
+                                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm text-muted mb-2">Xác nhận mật khẩu
+                                                            mới</label>
+                                                        <input type="password" name="confirmPassword" required
+                                                            minlength="6"
+                                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                                                    </div>
+                                                </div>
+                                                <button type="submit"
+                                                    class="bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-8 rounded-lg text-sm uppercase tracking-wide border border-white/10">
+                                                    Đổi mật khẩu
+                                                </button>
+                                            </form>
+                                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

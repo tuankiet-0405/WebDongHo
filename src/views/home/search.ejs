@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm: <%= query %> | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-8 bg-navy">
+            <div class="container mx-auto px-6">
+                <h1 class="text-3xl md:text-4xl font-display font-semibold text-white mb-4">Kết quả tìm kiếm</h1>
+                <% if (query) { %>
+                    <p class="text-muted">Tìm thấy <span class="text-gold">
+                            <%= totalProducts %>
+                        </span> kết quả cho "<span class="text-white">
+                            <%= query %>
+                        </span>"</p>
+                    <% } %>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark min-h-[60vh]">
+            <div class="container mx-auto px-6">
+
+                <!-- Search Form -->
+                <form action="/search" method="GET" class="mb-12 max-w-2xl">
+                    <div class="flex gap-3">
+                        <div class="flex-1 relative">
+                            <iconify-icon icon="lucide:search"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 text-muted"></iconify-icon>
+                            <input type="text" name="q" value="<%= query %>" placeholder="Tìm kiếm sản phẩm..."
+                                class="w-full bg-navy border border-white/10 rounded-lg pl-12 pr-4 py-3 text-white focus:border-gold outline-none">
+                        </div>
+                        <button type="submit"
+                            class="bg-gold hover:bg-[#C5A354] text-dark font-bold px-8 rounded-lg text-sm uppercase">Tìm</button>
+                    </div>
+                </form>
+
+                <% if (products && products.length> 0) { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <% products.forEach(function(product) { %>
+                            <div class="group">
+                                <div class="bg-navy/40 rounded-xl overflow-hidden border border-white/5 relative">
+                                    <% if (product.salePrice) { %>
+                                        <div class="absolute top-3 left-3 z-10">
+                                            <% var discountPct=Math.round((1 - product.salePrice / product.price) *
+                                                100); %>
+                                                <span
+                                                    class="bg-red-500/90 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">-
+                                                    <%= discountPct %>%
+                                                </span>
+                                        </div>
+                                        <% } %>
+                                            <div class="relative aspect-[4/5] bg-[#121620] overflow-hidden">
+                                                <a href="/products/<%= product.slug %>">
+                                                    <img src="<%= product.primaryImage || '/images/no-image.png' %>"
+                                                        alt="<%= product.name %>"
+                                                        class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
+                                                </a>
+                                                <div
+                                                    class="absolute inset-x-0 bottom-4 px-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-2">
+                                                    <button onclick="addToCart('<%= product._id %>')"
+                                                        class="flex-1 bg-white text-dark py-2.5 text-xs font-bold uppercase rounded hover:bg-gold transition-colors">Thêm
+                                                        vào giỏ</button>
+                                                </div>
+                                            </div>
+                                            <div class="p-5">
+                                                <span class="text-gold text-xs font-medium uppercase tracking-wider">
+                                                    <%= product.brand %>
+                                                </span>
+                                                <a href="/products/<%= product.slug %>">
+                                                    <h3
+                                                        class="text-white font-medium text-lg mt-1 mb-2 group-hover:text-gold transition-colors line-clamp-2">
+                                                        <%= product.name %>
+                                                    </h3>
+                                                </a>
+                                                <div class="flex items-center gap-3">
+                                                    <% if (product.salePrice) { %>
+                                                        <span class="text-gold font-mono font-medium">
+                                                            <%= product.salePrice.toLocaleString('vi-VN') %>₫
+                                                        </span>
+                                                        <span class="text-muted text-sm line-through">
+                                                            <%= product.price.toLocaleString('vi-VN') %>₫
+                                                        </span>
+                                                        <% } else { %>
+                                                            <span class="text-gold font-mono font-medium">
+                                                                <%= product.price.toLocaleString('vi-VN') %>₫
+                                                            </span>
+                                                            <% } %>
+                                                </div>
+                                            </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+
+                    <% if (totalPages> 1) { %>
+                        <div class="flex justify-center gap-2 mt-12">
+                            <% for (var i=1; i <=totalPages; i++) { %>
+                                <a href="?q=<%= query %>&page=<%= i %>"
+                                    class="w-10 h-10 flex items-center justify-center border rounded text-sm <%= currentPage === i ? 'bg-gold border-gold text-dark font-bold' : 'border-white/10 text-muted hover:border-gold' %>">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+                        </div>
+                        <% } %>
+                            <% } else { %>
+                                <div class="text-center py-20">
+                                    <iconify-icon icon="lucide:search-x" width="64"
+                                        class="text-muted mb-6"></iconify-icon>
+                                    <% if (query) { %>
+                                        <h3 class="text-2xl font-display font-medium text-white mb-4">Không tìm thấy kết
+                                            quả</h3>
+                                        <p class="text-muted mb-8">Không có sản phẩm nào phù hợp với "<%= query %>"</p>
+                                        <% } else { %>
+                                            <h3 class="text-2xl font-display font-medium text-white mb-4">Tìm kiếm sản
+                                                phẩm</h3>
+                                            <p class="text-muted mb-8">Nhập từ khóa để tìm kiếm đồng hồ</p>
+                                            <% } %>
+                                                <a href="/products"
+                                                    class="inline-flex items-center gap-2 bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 px-8 rounded text-sm uppercase tracking-wide">
+                                                    <iconify-icon icon="lucide:shopping-bag"></iconify-icon>Xem tất cả
+                                                    sản phẩm
+                                                </a>
+                                </div>
+                                <% } %>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

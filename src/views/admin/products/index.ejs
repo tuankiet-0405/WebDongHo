@@ -1,0 +1,211 @@
+<%- include('../partials/header', { currentPage: 'products' }) %>
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Quản lý sản phẩm</h1>
+            <p class="text-sm text-slate-500 mt-1">Tổng cộng <span class="font-medium text-slate-700">
+                    <%= totalProducts %>
+                </span> sản phẩm</p>
+        </div>
+        <a href="/admin/products/create" class="btn-primary flex items-center gap-2">
+            <iconify-icon icon="lucide:plus" width="18"></iconify-icon>
+            Thêm sản phẩm
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm animate-fade-in-up"
+        style="animation-delay: 100ms;">
+        <form action="/admin/products" method="GET" class="flex flex-wrap gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <div class="relative">
+                    <iconify-icon icon="lucide:search" class="absolute left-3 top-2.5 text-slate-400"
+                        width="16"></iconify-icon>
+                    <input type="text" name="search" value="<%= filters.search || '' %>"
+                        placeholder="Tìm tên sản phẩm..." class="input-field pl-9">
+                </div>
+            </div>
+            <select name="category" class="input-field w-auto min-w-[150px]">
+                <option value="">Tất cả danh mục</option>
+                <% categories.forEach(cat=> { %>
+                    <option value="<%= cat._id %>" <%=filters.category===cat._id.toString() ? 'selected' : '' %>><%=
+                            cat.name %>
+                    </option>
+                    <% }); %>
+            </select>
+            <select name="status" class="input-field w-auto">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active" <%=filters.status==='active' ? 'selected' : '' %>>Đang bán</option>
+                <option value="inactive" <%=filters.status==='inactive' ? 'selected' : '' %>>Ngừng bán</option>
+            </select>
+            <button type="submit" class="btn-primary">Lọc</button>
+            <a href="/admin/products" class="btn-secondary">Xóa lọc</a>
+        </form>
+    </div>
+
+    <!-- Products Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up"
+        style="animation-delay: 150ms;">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                    <tr>
+                        <th class="px-4 py-3 w-12">
+                            <input type="checkbox" class="rounded border-slate-300">
+                        </th>
+                        <th class="px-4 py-3">Sản phẩm</th>
+                        <th class="px-4 py-3">SKU</th>
+                        <th class="px-4 py-3">Danh mục</th>
+                        <th class="px-4 py-3">Giá</th>
+                        <th class="px-4 py-3">Tồn kho</th>
+                        <th class="px-4 py-3">Trạng thái</th>
+                        <th class="px-4 py-3 text-right">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% if (products && products.length> 0) { %>
+                        <% products.forEach(product=> { %>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="px-4 py-3">
+                                    <input type="checkbox" class="rounded border-slate-300">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                            <% if (product.images && product.images.length> 0) { %>
+                                                <img src="<%= product.images[0].url %>"
+                                                    class="w-full h-full object-cover" alt="<%= product.name %>">
+                                                <% } else { %>
+                                                    <div class="w-full h-full flex items-center justify-center">
+                                                        <iconify-icon icon="lucide:image"
+                                                            class="text-slate-300"></iconify-icon>
+                                                    </div>
+                                                    <% } %>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-slate-900 line-clamp-1">
+                                                <%= product.name %>
+                                            </div>
+                                            <div class="text-xs text-slate-500">
+                                                <%= product.brand || '' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 text-slate-600 font-mono text-xs">
+                                    <%= product.sku || '-' %>
+                                </td>
+                                <td class="px-4 py-3 text-slate-600">
+                                    <%= product.category ? product.category.name : '-' %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <% if (product.salePrice) { %>
+                                        <div class="font-medium text-primary-600">
+                                            <%= product.salePrice.toLocaleString('vi-VN') %>₫
+                                        </div>
+                                        <div class="text-xs text-slate-400 line-through">
+                                            <%= product.price.toLocaleString('vi-VN') %>₫
+                                        </div>
+                                        <% } else { %>
+                                            <div class="font-medium text-slate-900">
+                                                <%= product.price.toLocaleString('vi-VN') %>₫
+                                            </div>
+                                            <% } %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="font-medium <%= product.stock <= 5 ? 'text-red-600' : product.stock <= 20 ? 'text-orange-500' : 'text-slate-900' %>">
+                                        <%= product.stock %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= product.isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200' %>">
+                                        <%= product.isActive ? 'Đang bán' : 'Ngừng bán' %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <a href="/products/<%= product.slug %>" target="_blank"
+                                            class="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-blue-50 rounded transition-colors">
+                                            <iconify-icon icon="lucide:eye" width="16"></iconify-icon>
+                                        </a>
+                                        <a href="/admin/products/<%= product._id %>/edit"
+                                            class="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-blue-50 rounded transition-colors">
+                                            <iconify-icon icon="lucide:edit" width="16"></iconify-icon>
+                                        </a>
+                                        <button onclick="deleteProduct('<%= product._id %>')"
+                                            class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors">
+                                            <iconify-icon icon="lucide:trash-2" width="16"></iconify-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="px-4 py-12 text-center text-slate-400">
+                                            <iconify-icon icon="lucide:package-x" width="48"
+                                                class="mb-2"></iconify-icon>
+                                            <p>Chưa có sản phẩm nào</p>
+                                            <a href="/admin/products/create"
+                                                class="text-primary-600 hover:underline text-sm mt-2 inline-block">Thêm
+                                                sản phẩm đầu tiên</a>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages> 1) { %>
+            <div class="px-4 py-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Trang <span class="font-medium">
+                        <%= currentPage %>
+                    </span> / <span class="font-medium">
+                        <%= totalPages %>
+                    </span></span>
+                <div class="flex gap-1">
+                    <% if (currentPage> 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>"
+                            class="px-2 py-1 border border-slate-200 rounded text-slate-600 hover:bg-slate-50">
+                            <iconify-icon icon="lucide:chevron-left" width="14"></iconify-icon>
+                        </a>
+                        <% } %>
+                            <% for (let i=1; i <=Math.min(5, totalPages); i++) { %>
+                                <a href="?page=<%= i %>"
+                                    class="px-2 py-1 border rounded text-xs font-medium <%= currentPage === i ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-200 text-slate-600 hover:bg-slate-50' %>">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>"
+                                            class="px-2 py-1 border border-slate-200 rounded text-slate-600 hover:bg-slate-50">
+                                            <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                                        </a>
+                                        <% } %>
+                </div>
+            </div>
+            <% } %>
+    </div>
+
+    <script>
+        async function deleteProduct(id) {
+            if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+            try {
+                const res = await fetch(`/admin/products/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

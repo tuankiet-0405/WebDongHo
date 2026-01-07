@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased min-h-screen flex items-center justify-center py-20">
+    <div class="absolute inset-0 bg-gradient-to-b from-navy to-dark"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-md mx-auto">
+            <div class="text-center mb-8">
+                <a href="/"
+                    class="text-3xl font-display font-semibold tracking-tighter uppercase text-white">CHRONOS</a>
+                <h2 class="text-2xl font-display font-medium text-white mt-6 mb-2">Tạo tài khoản</h2>
+                <p class="text-muted">Đăng ký để nhận ưu đãi độc quyền</p>
+            </div>
+
+            <% if (typeof errors !=='undefined' && errors.length> 0) { %>
+                <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+                    <% errors.forEach(function(e) { %>
+                        <p class="text-red-400 text-sm">
+                            <%= e.msg %>
+                        </p>
+                        <% }); %>
+                </div>
+                <% } %>
+
+                    <form action="/auth/register" method="POST" class="glass-panel rounded-2xl p-8">
+                        <div class="mb-5">
+                            <label class="block text-sm text-muted mb-2">Họ và tên *</label>
+                            <div class="relative">
+                                <iconify-icon icon="lucide:user"
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-muted"></iconify-icon>
+                                <input type="text" name="name" required
+                                    value="<%= typeof name !== 'undefined' ? name : '' %>"
+                                    class="w-full bg-dark border border-white/10 rounded-lg pl-12 pr-4 py-3 text-white focus:border-gold outline-none">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="block text-sm text-muted mb-2">Email *</label>
+                            <div class="relative">
+                                <iconify-icon icon="lucide:mail"
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-muted"></iconify-icon>
+                                <input type="email" name="email" required
+                                    value="<%= typeof email !== 'undefined' ? email : '' %>"
+                                    class="w-full bg-dark border border-white/10 rounded-lg pl-12 pr-4 py-3 text-white focus:border-gold outline-none">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="block text-sm text-muted mb-2">Số điện thoại</label>
+                            <div class="relative">
+                                <iconify-icon icon="lucide:phone"
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-muted"></iconify-icon>
+                                <input type="tel" name="phone" value="<%= typeof phone !== 'undefined' ? phone : '' %>"
+                                    class="w-full bg-dark border border-white/10 rounded-lg pl-12 pr-4 py-3 text-white focus:border-gold outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-5">
+                            <div>
+                                <label class="block text-sm text-muted mb-2">Mật khẩu *</label>
+                                <input type="password" name="password" required minlength="6"
+                                    placeholder="Tối thiểu 6 ký tự"
+                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-muted mb-2">Xác nhận *</label>
+                                <input type="password" name="password2" required
+                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                            </div>
+                        </div>
+
+                        <label class="flex items-start gap-3 cursor-pointer mb-6">
+                            <input type="checkbox" required
+                                class="w-4 h-4 mt-0.5 rounded border-white/20 bg-dark text-gold">
+                            <span class="text-sm text-muted">Tôi đồng ý với <a href="#"
+                                    class="text-gold hover:underline">điều khoản dịch vụ</a></span>
+                        </label>
+
+                        <button type="submit"
+                            class="w-full bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 rounded-lg text-sm uppercase tracking-wide flex items-center justify-center gap-2">
+                            <iconify-icon icon="lucide:user-plus"></iconify-icon>Đăng ký
+                        </button>
+                    </form>
+
+                    <p class="text-center text-muted mt-6">Đã có tài khoản? <a href="/auth/login"
+                            class="text-gold hover:underline font-medium">Đăng nhập</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

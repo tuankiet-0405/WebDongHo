@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên hệ | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <!-- Hero -->
+        <section class="pt-32 pb-16 bg-navy">
+            <div class="container mx-auto px-6 text-center">
+                <span class="text-gold text-xs font-bold uppercase tracking-widest mb-4 block">Hỗ trợ 24/7</span>
+                <h1 class="text-4xl md:text-5xl font-display font-semibold text-white mb-4">Liên hệ với chúng tôi</h1>
+                <p class="text-muted max-w-xl mx-auto">Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ
+                    ngay!</p>
+            </div>
+        </section>
+
+        <section class="py-16 bg-dark">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-3 gap-8">
+
+                    <!-- Contact Info -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="glass-panel p-6 rounded-xl">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:map-pin" class="text-gold text-xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium mb-1">Showroom</h3>
+                                    <p class="text-muted text-sm">123 Đường Nguyễn Huệ, Quận 1<br>TP. Hồ Chí Minh</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-xl">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:phone" class="text-gold text-xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium mb-1">Hotline</h3>
+                                    <p class="text-muted text-sm">1900 1234 56<br>Hỗ trợ 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-xl">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:mail" class="text-gold text-xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium mb-1">Email</h3>
+                                    <p class="text-muted text-sm">contact@chronos.vn<br>support@chronos.vn</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-xl">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:clock" class="text-gold text-xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium mb-1">Giờ làm việc</h3>
+                                    <p class="text-muted text-sm">Thứ 2 - Thứ 7: 9:00 - 21:00<br>Chủ nhật: 10:00 - 18:00
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a href="#"
+                                class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-muted hover:text-gold hover:bg-gold/10 transition-colors">
+                                <iconify-icon icon="lucide:facebook"></iconify-icon>
+                            </a>
+                            <a href="#"
+                                class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-muted hover:text-gold hover:bg-gold/10 transition-colors">
+                                <iconify-icon icon="lucide:instagram"></iconify-icon>
+                            </a>
+                            <a href="#"
+                                class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-muted hover:text-gold hover:bg-gold/10 transition-colors">
+                                <iconify-icon icon="lucide:youtube"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="lg:col-span-2">
+                        <div class="glass-panel p-8 rounded-2xl">
+                            <h2 class="text-2xl font-display font-medium text-white mb-6">Gửi tin nhắn</h2>
+
+                            <% if (typeof success_msg !=='undefined' && success_msg) { %>
+                                <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6">
+                                    <p class="text-green-400 text-sm">
+                                        <%= success_msg %>
+                                    </p>
+                                </div>
+                                <% } %>
+
+                                    <form action="/contact" method="POST" class="space-y-6">
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm text-muted mb-2">Họ và tên *</label>
+                                                <input type="text" name="name" required
+                                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none"
+                                                    placeholder="Nguyễn Văn A">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm text-muted mb-2">Email *</label>
+                                                <input type="email" name="email" required
+                                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none"
+                                                    placeholder="email@example.com">
+                                            </div>
+                                        </div>
+
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm text-muted mb-2">Số điện thoại</label>
+                                                <input type="tel" name="phone"
+                                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none"
+                                                    placeholder="0912 345 678">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm text-muted mb-2">Chủ đề</label>
+                                                <select name="subject"
+                                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                                                    <option value="general">Thắc mắc chung</option>
+                                                    <option value="product">Tư vấn sản phẩm</option>
+                                                    <option value="order">Theo dõi đơn hàng</option>
+                                                    <option value="warranty">Bảo hành</option>
+                                                    <option value="other">Khác</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm text-muted mb-2">Nội dung *</label>
+                                            <textarea name="message" required rows="5"
+                                                class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none resize-none"
+                                                placeholder="Nhập nội dung tin nhắn..."></textarea>
+                                        </div>
+
+                                        <button type="submit"
+                                            class="w-full bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 rounded-lg text-sm uppercase tracking-wide flex items-center justify-center gap-2">
+                                            <iconify-icon icon="lucide:send"></iconify-icon>Gửi tin nhắn
+                                        </button>
+                                    </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map -->
+        <section class="h-96 bg-navy relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                    <iconify-icon icon="lucide:map" class="text-muted text-6xl mb-4"></iconify-icon>
+                    <p class="text-muted">Bản đồ sẽ được hiển thị ở đây</p>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

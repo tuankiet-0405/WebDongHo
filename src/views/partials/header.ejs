@@ -1,0 +1,193 @@
+<!-- Top Announcement Bar -->
+<div class="bg-navy border-b border-white/5 py-2 relative z-50">
+    <div
+        class="container mx-auto px-4 flex justify-center items-center text-[10px] md:text-xs tracking-wide text-muted font-medium">
+        <span>Miễn phí vận chuyển đơn từ 2.000.000₫</span>
+        <span class="mx-3 text-gold">•</span>
+        <span>Đổi trả 14 ngày</span>
+        <span class="mx-3 text-gold">•</span>
+        <span>Bảo hành 24 tháng</span>
+    </div>
+</div>
+
+<!-- Sticky Navbar -->
+<nav id="navbar" class="fixed top-0 left-0 w-full z-40 transition-all duration-300 border-b border-transparent mt-8">
+    <div class="absolute inset-0 bg-dark/80 backdrop-blur-md transition-opacity duration-300 opacity-0" id="nav-bg">
+    </div>
+    <div class="container mx-auto px-6 py-4 relative flex justify-between items-center">
+
+        <!-- Mobile Menu Button -->
+        <button onclick="toggleMobileMenu()" class="lg:hidden text-white/80 hover:text-white">
+            <iconify-icon icon="lucide:menu" width="24" stroke-width="1.5"></iconify-icon>
+        </button>
+
+        <!-- Brand Logo -->
+        <a href="/" class="text-2xl font-display font-semibold tracking-tighter uppercase text-white z-50">
+            CHRONOS
+        </a>
+
+        <!-- Desktop Menu -->
+        <% var currentPath=typeof req !=='undefined' ? req.path : '' ; var currentUrl=typeof req !=='undefined' ?
+            req.originalUrl : '' ; %>
+            <div class="hidden lg:flex items-center space-x-8 text-sm font-medium">
+                <a href="/products"
+                    class="<%= currentPath === '/products' && !currentUrl.includes('?') ? 'text-gold' : 'text-muted hover:text-white' %> transition-colors">Bộ
+                    sưu tập</a>
+                <a href="/products?gender=Nam"
+                    class="<%= currentUrl.includes('gender=Nam') ? 'text-gold' : 'text-muted hover:text-white' %> transition-colors">Nam</a>
+                <a href="/products?gender=N%E1%BB%AF"
+                    class="<%= currentUrl.includes('gender=N') && currentUrl.includes('%E1%BB%AF') ? 'text-gold' : 'text-muted hover:text-white' %> transition-colors">Nữ</a>
+                <a href="/products?isFeatured=true"
+                    class="<%= currentUrl.includes('isFeatured=true') ? 'text-gold' : 'text-gold/70 hover:text-gold' %> transition-colors">Limited</a>
+                <a href="/about"
+                    class="<%= currentPath === '/about' ? 'text-gold' : 'text-muted hover:text-white' %> transition-colors">Về
+                    chúng tôi</a>
+                <a href="/contact"
+                    class="<%= currentPath === '/contact' ? 'text-gold' : 'text-muted hover:text-white' %> transition-colors">Liên
+                    hệ</a>
+            </div>
+
+            <!-- Right Icons -->
+            <div class="flex items-center space-x-5 text-white/80">
+                <button class="hover:text-white transition-colors" onclick="toggleSearch()">
+                    <iconify-icon icon="lucide:search" width="20" stroke-width="1.5"></iconify-icon>
+                </button>
+
+                <% if (typeof user !=='undefined' && user) { %>
+                    <div class="relative group">
+                        <button class="hidden md:flex items-center gap-2 hover:text-white transition-colors">
+                            <iconify-icon icon="lucide:user" width="20" stroke-width="1.5"></iconify-icon>
+                            <span class="text-xs">
+                                <%= user.name %>
+                            </span>
+                        </button>
+                        <div
+                            class="absolute right-0 top-full mt-2 w-48 bg-navy border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                            <a href="/users/profile"
+                                class="block px-4 py-3 text-sm text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                <iconify-icon icon="lucide:user-circle" class="mr-2"></iconify-icon>Tài khoản
+                            </a>
+                            <a href="/users/orders"
+                                class="block px-4 py-3 text-sm text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                <iconify-icon icon="lucide:package" class="mr-2"></iconify-icon>Đơn hàng
+                            </a>
+                            <a href="/users/wishlist"
+                                class="block px-4 py-3 text-sm text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                <iconify-icon icon="lucide:heart" class="mr-2"></iconify-icon>Yêu thích
+                            </a>
+                            <% if (user.role==='admin' ) { %>
+                                <a href="/admin"
+                                    class="block px-4 py-3 text-sm text-gold hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:settings" class="mr-2"></iconify-icon>Quản trị
+                                </a>
+                                <% } %>
+                                    <div class="border-t border-white/10"></div>
+                                    <a href="/auth/logout"
+                                        class="block px-4 py-3 text-sm text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                        <iconify-icon icon="lucide:log-out" class="mr-2"></iconify-icon>Đăng xuất
+                                    </a>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <a href="/auth/login" class="hidden md:block hover:text-white transition-colors">
+                            <iconify-icon icon="lucide:user" width="20" stroke-width="1.5"></iconify-icon>
+                        </a>
+                        <% } %>
+
+                            <a href="/cart" class="relative hover:text-white transition-colors group">
+                                <iconify-icon icon="lucide:shopping-bag" width="20" stroke-width="1.5"></iconify-icon>
+                                <% if (typeof cart !=='undefined' && cart && cart.totalQty> 0) { %>
+                                    <span
+                                        class="absolute -top-1 -right-1.5 h-3.5 w-3.5 bg-gold rounded-full text-[9px] flex items-center justify-center text-dark font-bold">
+                                        <%= cart.totalQty %>
+                                    </span>
+                                    <% } %>
+                            </a>
+
+                            <a href="/products"
+                                class="hidden md:inline-flex items-center justify-center px-4 py-1.5 text-xs font-semibold tracking-wide border border-gold/40 text-gold rounded hover:bg-gold hover:text-dark transition-all duration-300">
+                                MUA NGAY
+                            </a>
+            </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu"
+    class="fixed inset-0 z-[60] bg-dark transform -translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div class="p-6 flex justify-between items-center border-b border-white/10">
+        <span class="text-xl font-display font-bold tracking-tight">MENU</span>
+        <button onclick="toggleMobileMenu()" class="text-white/60 hover:text-white">
+            <iconify-icon icon="lucide:x" width="28" stroke-width="1.5"></iconify-icon>
+        </button>
+    </div>
+    <div class="p-8 flex flex-col space-y-6 text-lg font-light">
+        <a href="/products" class="text-white">Bộ sưu tập</a>
+        <a href="/products?gender=Nam" class="text-muted hover:text-white">Nam</a>
+        <a href="/products?gender=Nữ" class="text-muted hover:text-white">Nữ</a>
+        <a href="/products?isFeatured=true" class="text-gold">Limited Edition</a>
+        <a href="/about" class="text-muted hover:text-white">Về chúng tôi</a>
+        <a href="/contact" class="text-muted hover:text-white">Liên hệ</a>
+        <div class="h-px bg-white/10 w-full my-4"></div>
+        <% if (typeof user !=='undefined' && user) { %>
+            <a href="/users/profile" class="text-sm text-muted hover:text-white">Tài khoản</a>
+            <a href="/auth/logout" class="text-sm text-muted hover:text-white">Đăng xuất</a>
+            <% } else { %>
+                <a href="/auth/login" class="text-sm text-muted hover:text-white">Đăng nhập</a>
+                <a href="/auth/register" class="text-sm text-muted hover:text-white">Đăng ký</a>
+                <% } %>
+    </div>
+</div>
+
+<!-- Search Overlay -->
+<div id="search-overlay"
+    class="fixed inset-0 z-[70] bg-dark/95 backdrop-blur-md transform -translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div class="container mx-auto px-6 py-20">
+        <div class="flex justify-end mb-8">
+            <button onclick="toggleSearch()" class="text-white/60 hover:text-white">
+                <iconify-icon icon="lucide:x" width="32"></iconify-icon>
+            </button>
+        </div>
+        <form action="/search" method="GET" class="max-w-2xl mx-auto">
+            <div class="relative">
+                <input type="text" name="q" placeholder="Tìm kiếm sản phẩm..."
+                    class="w-full bg-transparent border-b-2 border-white/20 focus:border-gold text-3xl md:text-5xl font-display text-white py-4 outline-none placeholder:text-white/20">
+                <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 text-gold">
+                    <iconify-icon icon="lucide:search" width="32"></iconify-icon>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Sticky Navbar Effect
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        const navBg = document.getElementById('nav-bg');
+        if (window.scrollY > 50) {
+            navBg.classList.remove('opacity-0');
+            nav.classList.remove('mt-8');
+            nav.classList.add('mt-0');
+        } else {
+            navBg.classList.add('opacity-0');
+            nav.classList.remove('mt-0');
+            nav.classList.add('mt-8');
+        }
+    });
+
+    // Mobile Menu
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('-translate-x-full');
+    }
+
+    // Search Overlay
+    function toggleSearch() {
+        const overlay = document.getElementById('search-overlay');
+        overlay.classList.toggle('-translate-y-full');
+        if (!overlay.classList.contains('-translate-y-full')) {
+            overlay.querySelector('input').focus();
+        }
+    }
+</script>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-8 bg-navy">
+            <div class="container mx-auto px-6">
+                <nav class="flex items-center gap-2 text-sm text-muted mb-6">
+                    <a href="/" class="hover:text-gold transition-colors">Trang chủ</a>
+                    <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                    <a href="/cart" class="hover:text-gold transition-colors">Giỏ hàng</a>
+                    <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                    <span class="text-white">Thanh toán</span>
+                </nav>
+                <h1 class="text-3xl md:text-4xl font-display font-semibold text-white">Thanh toán</h1>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark">
+            <div class="container mx-auto px-6">
+                <form action="/orders/create" method="POST">
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <!-- Checkout Form -->
+                        <div class="lg:col-span-2 space-y-6">
+
+                            <!-- Customer Info -->
+                            <div class="glass-panel rounded-xl p-6">
+                                <h3 class="text-lg font-display font-medium text-white mb-6 flex items-center gap-2">
+                                    <iconify-icon icon="lucide:user" class="text-gold"></iconify-icon>
+                                    Thông tin khách hàng
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-muted mb-2">Họ và tên *</label>
+                                        <input type="text" name="name" required value="<%= user ? user.name : '' %>"
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-muted mb-2">Email *</label>
+                                        <input type="email" name="email" required value="<%= user ? user.email : '' %>"
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm text-muted mb-2">Số điện thoại *</label>
+                                        <input type="tel" name="phone" required value="<%= user ? user.phone : '' %>"
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Shipping Address -->
+                            <div class="glass-panel rounded-xl p-6">
+                                <h3 class="text-lg font-display font-medium text-white mb-6 flex items-center gap-2">
+                                    <iconify-icon icon="lucide:map-pin" class="text-gold"></iconify-icon>
+                                    Địa chỉ giao hàng
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm text-muted mb-2">Địa chỉ chi tiết *</label>
+                                        <input type="text" name="address" required placeholder="Số nhà, tên đường..."
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-muted mb-2">Phường/Xã *</label>
+                                        <input type="text" name="ward" required
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-muted mb-2">Quận/Huyện *</label>
+                                        <input type="text" name="district" required
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm text-muted mb-2">Tỉnh/Thành phố *</label>
+                                        <input type="text" name="city" required
+                                            class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payment Method -->
+                            <div class="glass-panel rounded-xl p-6">
+                                <h3 class="text-lg font-display font-medium text-white mb-6 flex items-center gap-2">
+                                    <iconify-icon icon="lucide:credit-card" class="text-gold"></iconify-icon>
+                                    Phương thức thanh toán
+                                </h3>
+                                <div class="space-y-3">
+                                    <label
+                                        class="flex items-center gap-4 p-4 border border-white/10 rounded-lg cursor-pointer hover:border-gold/50 transition-colors">
+                                        <input type="radio" name="paymentMethod" value="cod" checked
+                                            class="w-4 h-4 text-gold focus:ring-gold">
+                                        <iconify-icon icon="lucide:truck" class="text-gold text-xl"></iconify-icon>
+                                        <div>
+                                            <p class="text-white font-medium">Thanh toán khi nhận hàng (COD)</p>
+                                            <p class="text-muted text-sm">Trả tiền mặt khi nhận được hàng</p>
+                                        </div>
+                                    </label>
+
+                                    <label
+                                        class="flex items-center gap-4 p-4 border border-white/10 rounded-lg cursor-pointer hover:border-gold/50 transition-colors">
+                                        <input type="radio" name="paymentMethod" value="vnpay"
+                                            class="w-4 h-4 text-gold focus:ring-gold">
+                                        <iconify-icon icon="lucide:credit-card"
+                                            class="text-gold text-xl"></iconify-icon>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2">
+                                                <p class="text-white font-medium">VNPay</p>
+                                                <span
+                                                    class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded">Thanh
+                                                    toán ngay</span>
+                                            </div>
+                                            <p class="text-muted text-sm">Thẻ ATM/Visa/MasterCard qua VNPay</p>
+                                        </div>
+                                    </label>
+
+                                    <label
+                                        class="flex items-center gap-4 p-4 border border-white/10 rounded-lg cursor-pointer hover:border-gold/50 transition-colors">
+                                        <input type="radio" name="paymentMethod" value="bank"
+                                            class="w-4 h-4 text-gold focus:ring-gold">
+                                        <iconify-icon icon="lucide:landmark" class="text-gold text-xl"></iconify-icon>
+                                        <div>
+                                            <p class="text-white font-medium">Chuyển khoản ngân hàng</p>
+                                            <p class="text-muted text-sm">Chuyển khoản trước khi giao hàng</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Note -->
+                            <div class="glass-panel rounded-xl p-6">
+                                <h3 class="text-lg font-display font-medium text-white mb-4 flex items-center gap-2">
+                                    <iconify-icon icon="lucide:message-square" class="text-gold"></iconify-icon>
+                                    Ghi chú đơn hàng
+                                </h3>
+                                <textarea name="note" rows="3"
+                                    placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay địa điểm giao hàng chi tiết hơn..."
+                                    class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="lg:col-span-1">
+                            <div class="glass-panel rounded-xl p-6 sticky top-28">
+                                <h3 class="text-lg font-display font-medium text-white mb-6">Đơn hàng của bạn</h3>
+
+                                <div class="space-y-4 mb-6 max-h-60 overflow-y-auto no-scrollbar">
+                                    <% cart.items.forEach(item=> { %>
+                                        <div class="flex gap-3">
+                                            <div class="w-16 h-16 bg-navy rounded-lg overflow-hidden flex-shrink-0">
+                                                <img src="<%= item.image %>" alt=""
+                                                    class="w-full h-full object-contain p-1">
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-white text-sm font-medium line-clamp-2">
+                                                    <%= item.name %>
+                                                </p>
+                                                <p class="text-muted text-xs">SL: <%= item.quantity %>
+                                                </p>
+                                                <p class="text-gold font-mono text-sm">
+                                                    <%= item.subtotal.toLocaleString('vi-VN') %>₫
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+
+                                <div class="border-t border-white/10 pt-4 space-y-3 mb-6">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-muted">Tạm tính</span>
+                                        <span class="text-white">
+                                            <%= cart.totalPrice.toLocaleString('vi-VN') %>₫
+                                        </span>
+                                    </div>
+                                    <% if (cart.coupon) { %>
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-green-400">Giảm giá</span>
+                                            <span class="text-green-400">-<%=
+                                                    cart.coupon.discount.toLocaleString('vi-VN') %>₫</span>
+                                        </div>
+                                        <% } %>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-muted">Phí vận chuyển</span>
+                                                <span class="text-white">
+                                                    <%= cart.totalPrice>= 2000000 ? 'Miễn phí' : '30.000₫' %>
+                                                </span>
+                                            </div>
+                                            <div class="h-px bg-white/10"></div>
+                                            <% var shipping=cart.totalPrice>= 2000000 ? 0 : 30000;
+                                                var discount = cart.coupon ? cart.coupon.discount : 0;
+                                                var total = cart.totalPrice + shipping - discount;
+                                                %>
+                                                <div class="flex justify-between">
+                                                    <span class="text-white font-medium">Tổng cộng</span>
+                                                    <span class="text-2xl font-mono font-bold text-gold">
+                                                        <%= total.toLocaleString('vi-VN') %>₫
+                                                    </span>
+                                                </div>
+                                </div>
+
+                                <button type="submit"
+                                    class="w-full bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 rounded-lg text-sm uppercase tracking-wide transition-colors flex items-center justify-center gap-2">
+                                    <iconify-icon icon="lucide:check-circle"></iconify-icon>
+                                    Đặt hàng
+                                </button>
+
+                                <p class="text-center text-xs text-muted mt-4">
+                                    Bằng việc đặt hàng, bạn đồng ý với <a href="#"
+                                        class="text-gold hover:underline">điều khoản dịch vụ</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

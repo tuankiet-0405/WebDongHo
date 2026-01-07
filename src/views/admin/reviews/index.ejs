@@ -1,0 +1,163 @@
+<%- include('../partials/header', { currentPage: 'reviews' }) %>
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Quản lý đánh giá</h1>
+            <p class="text-sm text-slate-500 mt-1">Tổng cộng <span class="font-medium text-slate-700">
+                    <%= totalReviews %>
+                </span> đánh giá</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm animate-fade-in-up"
+        style="animation-delay: 100ms;">
+        <form action="/admin/reviews" method="GET" class="flex flex-wrap gap-4">
+            <select name="status" class="input-field w-auto">
+                <option value="">Tất cả</option>
+                <option value="pending" <%=status==='pending' ? 'selected' : '' %>>Chờ duyệt</option>
+                <option value="approved" <%=status==='approved' ? 'selected' : '' %>>Đã duyệt</option>
+            </select>
+            <button type="submit" class="btn-primary">Lọc</button>
+            <a href="/admin/reviews" class="btn-secondary">Xóa lọc</a>
+        </form>
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up"
+        style="animation-delay: 150ms;">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                    <tr>
+                        <th class="px-4 py-3">Sản phẩm</th>
+                        <th class="px-4 py-3">Khách hàng</th>
+                        <th class="px-4 py-3">Đánh giá</th>
+                        <th class="px-4 py-3">Nội dung</th>
+                        <th class="px-4 py-3">Trạng thái</th>
+                        <th class="px-4 py-3">Ngày</th>
+                        <th class="px-4 py-3 text-right">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% if (reviews && reviews.length> 0) { %>
+                        <% reviews.forEach(review=> { %>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="px-4 py-3">
+                                    <a href="/products/<%= review.product ? review.product.slug : '' %>" target="_blank"
+                                        class="font-medium text-slate-900 hover:text-primary-600">
+                                        <%= review.product ? review.product.name : 'Sản phẩm đã xóa' %>
+                                    </a>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-slate-900">
+                                        <%= review.user ? review.user.name : 'Ẩn danh' %>
+                                    </div>
+                                    <div class="text-xs text-slate-500">
+                                        <%= review.user ? review.user.email : '' %>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-0.5">
+                                        <% for (let i=0; i < 5; i++) { %>
+                                            <iconify-icon icon="lucide:star"
+                                                class="<%= i < review.rating ? 'text-yellow-400' : 'text-slate-200' %>"
+                                                width="14"></iconify-icon>
+                                            <% } %>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 max-w-[300px]">
+                                    <p class="text-slate-600 line-clamp-2">
+                                        <%= review.comment || '' %>
+                                    </p>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= review.isApproved ? 'bg-emerald-50 text-emerald-700' : 'bg-yellow-50 text-yellow-700' %>">
+                                        <%= review.isApproved ? 'Đã duyệt' : 'Chờ duyệt' %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-slate-500">
+                                    <%= new Date(review.createdAt).toLocaleDateString('vi-VN') %>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <% if (!review.isApproved) { %>
+                                            <button onclick="approveReview('<%= review._id %>')"
+                                                class="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                                                Duyệt
+                                            </button>
+                                            <% } %>
+                                                <button onclick="deleteReview('<%= review._id %>')"
+                                                    class="text-xs text-red-600 hover:text-red-700 font-medium">
+                                                    Xóa
+                                                </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" class="px-4 py-12 text-center text-slate-400">
+                                            <iconify-icon icon="lucide:star" width="48" class="mb-2"></iconify-icon>
+                                            <p>Chưa có đánh giá nào</p>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages> 1) { %>
+            <div class="px-4 py-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Trang <span class="font-medium">
+                        <%= currentPage %>
+                    </span> / <span class="font-medium">
+                        <%= totalPages %>
+                    </span></span>
+                <div class="flex gap-1">
+                    <% for (let i=1; i <=Math.min(5, totalPages); i++) { %>
+                        <a href="?page=<%= i %>"
+                            class="px-2 py-1 border rounded text-xs font-medium <%= currentPage === i ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-200 text-slate-600 hover:bg-slate-50' %>">
+                            <%= i %>
+                        </a>
+                        <% } %>
+                </div>
+            </div>
+            <% } %>
+    </div>
+
+    <script>
+        async function approveReview(id) {
+            try {
+                const res = await fetch(`/admin/reviews/${id}/approve`, { method: 'PUT' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        async function deleteReview(id) {
+            if (!confirm('Bạn có chắc muốn xóa đánh giá này?')) return;
+            try {
+                const res = await fetch(`/admin/reviews/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

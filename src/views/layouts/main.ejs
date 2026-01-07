@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !=='undefined' ? title : 'CHRONOS | Precision in the Dark' %>
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D6B25E;
+        }
+
+        @keyframes slowZoom {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .animate-slow-zoom {
+            animation: slowZoom 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            width: 200%;
+            height: 200vh;
+            background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
+            opacity: 0.04;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(234, 234, 240, 0.3);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#070A12', navy: '#0B1020', gold: '#D6B25E',
+                        cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Sora', 'sans-serif'],
+                        mono: ['Space Grotesk', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased selection:bg-gold selection:text-dark overflow-x-hidden">
+    <div class="noise-overlay"></div>
+
+    <%- include('../partials/header') %>
+
+        <% if (typeof success_msg !=='undefined' && success_msg) { %>
+            <div class="fixed bottom-8 right-8 bg-dark border border-green-500/30 text-white px-6 py-4 rounded shadow-2xl z-[100] flex items-center gap-3"
+                id="flash-success">
+                <iconify-icon icon="lucide:check-circle" class="text-green-500"></iconify-icon>
+                <p class="text-sm">
+                    <%= success_msg %>
+                </p>
+            </div>
+            <% } %>
+
+                <% if (typeof error_msg !=='undefined' && error_msg) { %>
+                    <div class="fixed bottom-8 right-8 bg-dark border border-red-500/30 text-white px-6 py-4 rounded shadow-2xl z-[100] flex items-center gap-3"
+                        id="flash-error">
+                        <iconify-icon icon="lucide:alert-circle" class="text-red-500"></iconify-icon>
+                        <p class="text-sm">
+                            <%= error_msg %>
+                        </p>
+                    </div>
+                    <% } %>
+
+                        <main>
+                            <%- typeof content !=='undefined' ? content : '' %>
+                        </main>
+
+                        <%- include('../partials/footer') %>
+
+                            <script src="/js/main.js"></script>
+                            <script>
+                                setTimeout(() => {
+                                    document.querySelectorAll('#flash-success, #flash-error').forEach(el => {
+                                        el.style.opacity = '0';
+                                        setTimeout(() => el.remove(), 300);
+                                    });
+                                }, 4000);
+                            </script>
+</body>
+
+</html>

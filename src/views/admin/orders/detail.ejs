@@ -1,0 +1,264 @@
+<%- include('../partials/header', { currentPage: 'orders' }) %>
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Chi tiết đơn hàng</h1>
+            <p class="text-sm text-slate-500 mt-1">#<%= order.orderNumber || order._id %>
+            </p>
+        </div>
+        <a href="/admin/orders" class="btn-secondary flex items-center gap-2">
+            <iconify-icon icon="lucide:arrow-left" width="18"></iconify-icon>
+            Quay lại
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 100ms;">
+        <!-- Order Info -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Products -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100">
+                    <h2 class="text-base font-semibold text-slate-900">Sản phẩm đặt mua</h2>
+                </div>
+                <div class="divide-y divide-slate-100">
+                    <% if (order.items) { %>
+                        <% order.items.forEach(item=> { %>
+                            <div class="p-4 flex items-center gap-4">
+                                <div class="w-16 h-16 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                    <% if (item.product && item.product.images && item.product.images.length> 0) { %>
+                                        <img src="<%= item.product.images[0].url %>" class="w-full h-full object-cover"
+                                            alt="<%= item.name %>">
+                                        <% } else { %>
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <iconify-icon icon="lucide:package" class="text-slate-300"
+                                                    width="24"></iconify-icon>
+                                            </div>
+                                            <% } %>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium text-slate-900">
+                                        <%= item.name %>
+                                    </div>
+                                    <div class="text-sm text-slate-500">Số lượng: <%= item.quantity %>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-medium text-slate-900">
+                                        <%= (item.price * item.quantity).toLocaleString('vi-VN') %>₫
+                                    </div>
+                                    <div class="text-xs text-slate-500">
+                                        <%= item.price.toLocaleString('vi-VN') %>₫ / sản phẩm
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } %>
+                </div>
+                <div class="p-4 bg-slate-50 border-t border-slate-100">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-slate-500">Tạm tính</span>
+                        <span class="text-slate-900">
+                            <%= (order.subtotal || order.totalAmount).toLocaleString('vi-VN') %>₫
+                        </span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-slate-500">Phí vận chuyển</span>
+                        <span class="text-slate-900">
+                            <%= (order.shippingFee || 0).toLocaleString('vi-VN') %>₫
+                        </span>
+                    </div>
+                    <% if (order.discount) { %>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-slate-500">Giảm giá</span>
+                            <span class="text-emerald-600">-<%= order.discount.toLocaleString('vi-VN') %>₫</span>
+                        </div>
+                        <% } %>
+                            <div class="flex justify-between text-base font-semibold pt-2 border-t border-slate-200">
+                                <span class="text-slate-900">Tổng cộng</span>
+                                <span class="text-primary-600">
+                                    <%= order.totalAmount.toLocaleString('vi-VN') %>₫
+                                </span>
+                            </div>
+                </div>
+            </div>
+
+            <!-- Customer Info -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4">Thông tin khách hàng</h2>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label class="text-slate-500">Họ tên</label>
+                        <p class="font-medium text-slate-900">
+                            <%= order.customer ? order.customer.name : '-' %>
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-slate-500">Số điện thoại</label>
+                        <p class="font-medium text-slate-900">
+                            <%= order.customer ? order.customer.phone : '-' %>
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-slate-500">Email</label>
+                        <p class="font-medium text-slate-900">
+                            <%= order.customer ? order.customer.email : '-' %>
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-slate-500">Địa chỉ</label>
+                        <p class="font-medium text-slate-900">
+                            <%= order.shippingAddress ? order.shippingAddress.address : '-' %>
+                        </p>
+                    </div>
+                </div>
+                <% if (order.note) { %>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <label class="text-slate-500 text-sm">Ghi chú</label>
+                        <p class="font-medium text-slate-900">
+                            <%= order.note %>
+                        </p>
+                    </div>
+                    <% } %>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Status Update -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4">Cập nhật trạng thái</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Trạng thái hiện tại</label>
+                        <% let currentStatusClass='' ; let currentStatusText='' ; if (order.status==='pending' ) {
+                            currentStatusClass='bg-yellow-50 text-yellow-700' ; currentStatusText='Chờ xác nhận' ; }
+                            else if (order.status==='confirmed' ) { currentStatusClass='bg-blue-50 text-blue-700' ;
+                            currentStatusText='Đã xác nhận' ; } else if (order.status==='shipping' ) {
+                            currentStatusClass='bg-indigo-50 text-indigo-700' ; currentStatusText='Đang giao' ; } else
+                            if (order.status==='delivered' ) { currentStatusClass='bg-emerald-50 text-emerald-700' ;
+                            currentStatusText='Hoàn tất' ; } else { currentStatusClass='bg-red-50 text-red-700' ;
+                            currentStatusText='Đã hủy' ; } %>
+                            <span
+                                class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium <%= currentStatusClass %>">
+                                <%= currentStatusText %>
+                            </span>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Chuyển trạng thái</label>
+                        <select id="newStatus" class="input-field">
+                            <option value="">Chọn trạng thái mới</option>
+                            <option value="confirmed" <%=order.status==='confirmed' ? 'disabled' : '' %>>Xác nhận đơn
+                            </option>
+                            <option value="shipping" <%=order.status==='shipping' ? 'disabled' : '' %>>Đang giao hàng
+                            </option>
+                            <option value="delivered" <%=order.status==='delivered' ? 'disabled' : '' %>>Đã giao hàng
+                            </option>
+                            <option value="cancelled" <%=order.status==='cancelled' ? 'disabled' : '' %>>Hủy đơn
+                            </option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ghi chú</label>
+                        <textarea id="statusNote" rows="2" class="input-field"
+                            placeholder="Ghi chú khi cập nhật..."></textarea>
+                    </div>
+
+                    <button onclick="updateStatus()" class="w-full btn-primary">
+                        Cập nhật trạng thái
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4">Thanh toán</h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Phương thức</span>
+                        <span class="font-medium text-slate-900">
+                            <%= order.paymentMethod==='cod' ? 'COD' : order.paymentMethod==='bank' ? 'Chuyển khoản' :
+                                order.paymentMethod %>
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Trạng thái</span>
+                        <span
+                            class="font-medium <%= order.paymentStatus === 'paid' ? 'text-emerald-600' : 'text-yellow-600' %>">
+                            <%= order.paymentStatus==='paid' ? 'Đã thanh toán' : 'Chưa thanh toán' %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Timeline -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4">Lịch sử</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-3">
+                        <div class="w-2 h-2 rounded-full bg-primary-500 mt-2"></div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-900">Đơn hàng được tạo</p>
+                            <p class="text-xs text-slate-500">
+                                <%= new Date(order.createdAt).toLocaleString('vi-VN') %>
+                            </p>
+                        </div>
+                    </div>
+                    <% if (order.statusHistory) { %>
+                        <% order.statusHistory.forEach(history=> { %>
+                            <div class="flex gap-3">
+                                <div class="w-2 h-2 rounded-full bg-slate-300 mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-900">
+                                        <%= history.status==='confirmed' ? 'Đã xác nhận' : history.status==='shipping'
+                                            ? 'Đang giao' : history.status==='delivered' ? 'Hoàn tất' : history.status
+                                            %>
+                                    </p>
+                                    <p class="text-xs text-slate-500">
+                                        <%= new Date(history.date).toLocaleString('vi-VN') %>
+                                    </p>
+                                    <% if (history.note) { %>
+                                        <p class="text-xs text-slate-400 mt-1">
+                                            <%= history.note %>
+                                        </p>
+                                        <% } %>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function updateStatus() {
+            const status = document.getElementById('newStatus').value;
+            const note = document.getElementById('statusNote').value;
+
+            if (!status) {
+                alert('Vui lòng chọn trạng thái mới');
+                return;
+            }
+
+            try {
+                const res = await fetch('/admin/orders/<%= order._id %>/status', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status, note })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

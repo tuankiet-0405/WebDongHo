@@ -1,0 +1,91 @@
+<!-- Final CTA Section -->
+<section class="py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-dark to-navy"></div>
+    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+        <h2 class="text-4xl md:text-5xl font-display font-semibold text-white mb-6">Sẵn sàng nâng cấp phong cách?</h2>
+        <p class="text-muted mb-10 max-w-lg mx-auto">Tham gia danh sách ưu tiên để nhận thông tin về các bộ sưu tập
+            Limited và ưu đãi độc quyền.</p>
+
+        <div class="flex flex-col md:flex-row gap-4 justify-center max-w-md mx-auto mb-10">
+            <input type="email" placeholder="Email của bạn"
+                class="bg-white/5 border border-white/10 text-white px-5 py-3 rounded w-full focus:outline-none focus:border-gold transition-colors placeholder:text-muted/50">
+            <button
+                class="bg-gold hover:bg-[#C5A354] text-dark font-bold px-6 py-3 rounded uppercase tracking-wide whitespace-nowrap transition-colors">
+                Đăng ký
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark border-t border-white/10 pt-16 pb-8 text-sm">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest mb-4">Shop</h4>
+                <ul class="space-y-2 text-muted">
+                    <li><a href="/products?sort=newest" class="hover:text-gold transition-colors">Hàng mới về</a></li>
+                    <li><a href="/products?sort=bestseller" class="hover:text-gold transition-colors">Bán chạy nhất</a>
+                    </li>
+                    <li><a href="/products?gender=Nam" class="hover:text-gold transition-colors">Đồng hồ Nam</a></li>
+                    <li><a href="/products?gender=Nữ" class="hover:text-gold transition-colors">Đồng hồ Nữ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest mb-4">Hỗ trợ</h4>
+                <ul class="space-y-2 text-muted">
+                    <li><a href="/orders/track" class="hover:text-gold transition-colors">Tra cứu đơn hàng</a></li>
+                    <li><a href="#" class="hover:text-gold transition-colors">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="hover:text-gold transition-colors">Bảo hành</a></li>
+                    <li><a href="/contact" class="hover:text-gold transition-colors">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest mb-4">Công ty</h4>
+                <ul class="space-y-2 text-muted">
+                    <li><a href="/about" class="hover:text-gold transition-colors">Về chúng tôi</a></li>
+                    <li><a href="#" class="hover:text-gold transition-colors">Showroom</a></li>
+                    <li><a href="#" class="hover:text-gold transition-colors">Tuyển dụng</a></li>
+                    <li><a href="#" class="hover:text-gold transition-colors">Blog</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest mb-4">Kết nối</h4>
+                <div class="flex gap-4 mb-4">
+                    <a href="#" class="text-white hover:text-gold transition-colors"><iconify-icon
+                            icon="lucide:facebook" width="20"></iconify-icon></a>
+                    <a href="#" class="text-white hover:text-gold transition-colors"><iconify-icon
+                            icon="lucide:instagram" width="20"></iconify-icon></a>
+                    <a href="#" class="text-white hover:text-gold transition-colors"><iconify-icon icon="lucide:youtube"
+                            width="20"></iconify-icon></a>
+                </div>
+                <div class="text-muted text-xs space-y-1">
+                    <p><iconify-icon icon="lucide:phone" class="mr-2"></iconify-icon>1900 1234</p>
+                    <p><iconify-icon icon="lucide:mail" class="mr-2"></iconify-icon>support@chronos.vn</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-muted text-xs">© <%= new Date().getFullYear() %> CHRONOS. All rights reserved.</p>
+            <div class="flex gap-3 opacity-50">
+                <iconify-icon icon="lucide:credit-card" width="24"></iconify-icon>
+                <div class="w-8 h-5 bg-white/10 rounded"></div>
+                <div class="w-8 h-5 bg-white/10 rounded"></div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Notification Toast -->
+<div id="toast"
+    class="fixed bottom-8 right-8 bg-dark border border-gold/30 text-white px-6 py-4 rounded shadow-2xl transform translate-y-24 transition-transform duration-300 z-[100] flex items-center gap-3 hidden">
+    <iconify-icon icon="lucide:check-circle" class="text-gold"></iconify-icon>
+    <div>
+        <h5 class="text-sm font-bold" id="toast-title">Thành công</h5>
+        <p class="text-xs text-muted" id="toast-message">Đã thêm sản phẩm vào giỏ hàng.</p>
+    </div>
+</div>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !=='undefined' ? title : 'Admin | CHRONOS' %>
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#0b2a6f',
+                        },
+                        slate: { 850: '#151f32' }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass { @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm; }
+            .card-hover { @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-900/5; }
+            .sidebar-link { @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-primary-600 hover:bg-blue-50 transition-colors; }
+            .sidebar-link.active { @apply text-primary-600 bg-blue-50 border-r-2 border-primary-600 rounded-r-none; }
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            .btn-primary { @apply bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors; }
+            .btn-secondary { @apply bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors; }
+            .input-field { @apply w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all; }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden relative">
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.02]">
+        <svg class="absolute -right-20 -top-20 w-[600px] h-[600px] text-primary-900 animate-spin"
+            style="animation-duration: 60s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5">
+            <path
+                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+            <path d="M12 6V12L16 14" />
+        </svg>
+    </div>
+
+    <div class="flex h-screen w-full overflow-hidden relative z-10">
+
+        <!-- Mobile Overlay -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 hidden lg:hidden opacity-0 transition-opacity duration-300">
+        </div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full shadow-xl lg:shadow-none">
+            <!-- Brand -->
+            <div class="h-16 flex items-center px-6 border-b border-slate-100">
+                <a href="/admin" class="flex items-center gap-2 text-primary-600">
+                    <iconify-icon icon="lucide:watch" width="24" stroke-width="1.5"></iconify-icon>
+                    <span class="text-lg font-bold tracking-tight text-primary-900">CHRONOS<span
+                            class="text-primary-600">ADMIN</span></span>
+                </a>
+            </div>
+
+            <!-- Nav -->
+            <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1 no-scrollbar">
+                <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Quản lý chung</p>
+                <a href="/admin" class="sidebar-link active">
+                    <iconify-icon icon="lucide:layout-dashboard" width="18"></iconify-icon>
+                    Tổng quan
+                </a>
+                <a href="/admin/products" class="sidebar-link">
+                    <iconify-icon icon="lucide:package" width="18"></iconify-icon>
+                    Sản phẩm
+                </a>
+                <a href="/admin/orders" class="sidebar-link">
+                    <iconify-icon icon="lucide:shopping-bag" width="18"></iconify-icon>
+                    Đơn hàng
+                    <% if (stats && stats.pendingOrders> 0) { %>
+                        <span class="ml-auto bg-red-50 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                            <%= stats.pendingOrders %>
+                        </span>
+                        <% } %>
+                </a>
+                <a href="/admin/users" class="sidebar-link">
+                    <iconify-icon icon="lucide:users" width="18"></iconify-icon>
+                    Khách hàng
+                </a>
+                <a href="/admin/categories" class="sidebar-link">
+                    <iconify-icon icon="lucide:archive" width="18"></iconify-icon>
+                    Danh mục
+                </a>
+
+                <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2">Marketing & Nội
+                    dung</p>
+                <a href="/admin/coupons" class="sidebar-link">
+                    <iconify-icon icon="lucide:ticket" width="18"></iconify-icon>
+                    Mã giảm giá
+                </a>
+                <a href="/admin/reviews" class="sidebar-link">
+                    <iconify-icon icon="lucide:star" width="18"></iconify-icon>
+                    Đánh giá
+                </a>
+
+                <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2">Hệ thống</p>
+                <a href="/admin/settings" class="sidebar-link">
+                    <iconify-icon icon="lucide:settings" width="18"></iconify-icon>
+                    Cài đặt
+                </a>
+                <a href="/" class="sidebar-link">
+                    <iconify-icon icon="lucide:external-link" width="18"></iconify-icon>
+                    Xem website
+                </a>
+            </div>
+
+            <!-- User Mini Profile -->
+            <div class="p-4 border-t border-slate-100">
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-500 to-indigo-600 flex items-center justify-center text-white text-xs font-medium">
+                        <%= user ? user.name.charAt(0).toUpperCase() : 'A' %>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-900 truncate">
+                            <%= user ? user.name : 'Admin' %>
+                        </p>
+                        <p class="text-xs text-slate-500 truncate">
+                            <%= user ? user.email : 'admin@chronos.vn' %>
+                        </p>
+                    </div>
+                    <a href="/auth/logout" class="text-slate-400 hover:text-red-500">
+                        <iconify-icon icon="lucide:log-out" width="16"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+
+            <!-- Top Header -->
+            <header
+                class="h-16 glass sticky top-0 z-30 px-6 flex items-center justify-between border-b border-slate-200/60">
+                <div class="flex items-center gap-4 flex-1">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-primary-600">
+                        <iconify-icon icon="lucide:menu" width="24"></iconify-icon>
+                    </button>
+
+                    <div class="relative hidden sm:block w-full max-w-md group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <iconify-icon icon="lucide:search"
+                                class="text-slate-400 group-focus-within:text-primary-500 transition-colors"
+                                width="18"></iconify-icon>
+                        </div>
+                        <input type="text" placeholder="Tìm đơn hàng, sản phẩm, khách hàng..."
+                            class="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg leading-5 bg-slate-50/50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 sm:text-sm transition-all shadow-sm">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden md:block">
+                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Trạng thái</div>
+                        <div class="flex items-center justify-end gap-1.5">
+                            <span class="relative flex h-2 w-2">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-xs font-medium text-emerald-600">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+
+                <!-- Page Title & Controls -->
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-in-up">
+                    <div>
+                        <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Tổng quan hoạt động</h1>
+                        <p class="text-sm text-slate-500 mt-1">Dữ liệu cập nhật: <span
+                                class="font-medium text-slate-700">Vừa xong</span></p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400 font-medium">Khoảng thời gian:</span>
+                        <select
+                            class="text-sm border-slate-200 rounded-lg shadow-sm focus:border-primary-500 focus:ring-primary-500/20 py-1.5 pl-3 pr-8 bg-white cursor-pointer hover:border-primary-400 transition-colors">
+                            <option>Hôm nay</option>
+                            <option>7 ngày qua</option>
+                            <option>30 ngày qua</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Revenue -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm card-hover animate-fade-in-up"
+                        style="animation-delay: 100ms;">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-blue-50 rounded-lg text-primary-600">
+                                <iconify-icon icon="lucide:banknote" width="20"></iconify-icon>
+                            </div>
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600">
+                                <iconify-icon icon="lucide:trending-up" width="12"></iconify-icon> +12.5%
+                            </span>
+                        </div>
+                        <h3 class="text-sm font-medium text-slate-500">Tổng doanh thu</h3>
+                        <div class="mt-1 flex items-baseline gap-2">
+                            <span class="text-2xl font-semibold tracking-tight text-slate-900">
+                                <%= (stats.totalRevenue || 0).toLocaleString('vi-VN') %>₫
+                            </span>
+                        </div>
+                        <div class="h-8 mt-3 flex items-end gap-1">
+                            <div class="w-full bg-blue-100 rounded-t-sm h-[40%]"></div>
+                            <div class="w-full bg-blue-100 rounded-t-sm h-[70%]"></div>
+                            <div class="w-full bg-blue-100 rounded-t-sm h-[50%]"></div>
+                            <div class="w-full bg-blue-200 rounded-t-sm h-[80%]"></div>
+                            <div
+                                class="w-full bg-primary-500 rounded-t-sm h-[100%] shadow-[0_0_8px_rgba(37,99,235,0.4)]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Orders -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm card-hover animate-fade-in-up"
+                        style="animation-delay: 150ms;">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+                                <iconify-icon icon="lucide:shopping-cart" width="20"></iconify-icon>
+                            </div>
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600">
+                                <iconify-icon icon="lucide:arrow-up" width="12"></iconify-icon> +<%= stats.todayOrders
+                                    || 0 %>
+                            </span>
+                        </div>
+                        <h3 class="text-sm font-medium text-slate-500">Tổng đơn hàng</h3>
+                        <div class="mt-1">
+                            <span class="text-2xl font-semibold tracking-tight text-slate-900">
+                                <%= stats.totalOrders || 0 %>
+                            </span>
+                            <span class="text-xs text-slate-400 ml-1">đơn</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Đang chờ xử lý: <span
+                                class="font-medium text-orange-500">
+                                <%= stats.pendingOrders || 0 %>
+                            </span></p>
+                    </div>
+
+                    <!-- Products -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm card-hover animate-fade-in-up"
+                        style="animation-delay: 200ms;">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-violet-50 rounded-lg text-violet-600">
+                                <iconify-icon icon="lucide:package" width="20"></iconify-icon>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-slate-500">Tổng sản phẩm</h3>
+                        <div class="mt-1">
+                            <span class="text-2xl font-semibold tracking-tight text-slate-900">
+                                <%= stats.totalProducts || 0 %>
+                            </span>
+                            <span class="text-xs text-slate-400 ml-1">sản phẩm</span>
+                        </div>
+                        <a href="/admin/products"
+                            class="text-xs text-primary-600 font-medium hover:underline mt-2 inline-block">Quản lý
+                            &rarr;</a>
+                    </div>
+
+                    <!-- Users -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm card-hover animate-fade-in-up"
+                        style="animation-delay: 250ms;">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+                                <iconify-icon icon="lucide:users" width="20"></iconify-icon>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-slate-500">Khách hàng</h3>
+                        <div class="mt-1 flex items-baseline gap-2">
+                            <span class="text-2xl font-semibold tracking-tight text-slate-900">
+                                <%= stats.totalUsers || 0 %>
+                            </span>
+                            <span class="text-xs text-slate-500">người dùng</span>
+                        </div>
+                        <a href="/admin/users"
+                            class="text-xs text-primary-600 font-medium hover:underline mt-2 inline-block">Xem tất cả
+                            &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Recent Orders -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 300ms;">
+                    <!-- Quick Actions -->
+                    <div
+                        class="bg-gradient-to-br from-primary-900 to-primary-800 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-2xl">
+                        </div>
+                        <h2 class="text-lg font-semibold mb-4 relative z-10">Thao tác nhanh</h2>
+                        <div class="grid grid-cols-2 gap-3 relative z-10">
+                            <a href="/admin/products/create"
+                                class="flex items-center gap-2 p-3 bg-white/10 hover:bg-white/20 rounded-lg border border-white/10 transition-colors backdrop-blur-sm text-sm font-medium">
+                                <iconify-icon icon="lucide:plus-circle" width="18"></iconify-icon> Thêm sản phẩm
+                            </a>
+                            <a href="/admin/orders"
+                                class="flex items-center gap-2 p-3 bg-white/10 hover:bg-white/20 rounded-lg border border-white/10 transition-colors backdrop-blur-sm text-sm font-medium">
+                                <iconify-icon icon="lucide:check-circle" width="18"></iconify-icon> Duyệt đơn mới
+                            </a>
+                            <a href="/admin/coupons"
+                                class="flex items-center gap-2 p-3 bg-white/10 hover:bg-white/20 rounded-lg border border-white/10 transition-colors backdrop-blur-sm text-sm font-medium">
+                                <iconify-icon icon="lucide:tag" width="18"></iconify-icon> Tạo Voucher
+                            </a>
+                            <a href="/admin/categories"
+                                class="flex items-center gap-2 p-3 bg-white/10 hover:bg-white/20 rounded-lg border border-white/10 transition-colors backdrop-blur-sm text-sm font-medium">
+                                <iconify-icon icon="lucide:archive" width="18"></iconify-icon> Danh mục
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders Table -->
+                    <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                            <h2 class="text-base font-semibold text-slate-900">Đơn hàng gần đây</h2>
+                            <a href="/admin/orders" class="text-xs font-medium text-primary-600 hover:underline">Xem tất
+                                cả</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead
+                                    class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                                    <tr>
+                                        <th class="px-4 py-3">Mã đơn</th>
+                                        <th class="px-4 py-3">Tổng tiền</th>
+                                        <th class="px-4 py-3">Trạng thái</th>
+                                        <th class="px-4 py-3">Ngày đặt</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <% if (recentOrders && recentOrders.length> 0) { %>
+                                        <% recentOrders.slice(0, 5).forEach(order=> { %>
+                                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                                <td class="px-4 py-3 font-medium text-slate-900">#<%= order.orderNumber
+                                                        || order._id.toString().slice(-6).toUpperCase() %>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <%= (order.totalAmount || 0).toLocaleString('vi-VN') %>₫
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium 
+                                                    <%= order.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' :
+                                                       order.status === 'confirmed' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                                                       order.status === 'shipping' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' :
+                                                       order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                                       'bg-red-50 text-red-700 border border-red-200' %>">
+                                                        <%= order.status==='pending' ? 'Chờ xác nhận' :
+                                                            order.status==='confirmed' ? 'Đã xác nhận' :
+                                                            order.status==='shipping' ? 'Đang giao' :
+                                                            order.status==='delivered' ? 'Hoàn tất' : 'Đã hủy' %>
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-slate-500">
+                                                    <%= new Date(order.createdAt).toLocaleDateString('vi-VN') %>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="4" class="px-4 py-8 text-center text-slate-400">
+                                                            Chưa có đơn hàng nào</td>
+                                                    </tr>
+                                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Products -->
+                <div class="animate-fade-in-up" style="animation-delay: 350ms;">
+                    <h2 class="text-base font-semibold text-slate-900 mb-4">Sản phẩm bán chạy</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <% if (topProducts && topProducts.length> 0) { %>
+                            <% topProducts.forEach((product, index)=> { %>
+                                <div
+                                    class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex items-center gap-4 card-hover">
+                                    <div
+                                        class="w-16 h-16 bg-slate-100 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden relative">
+                                        <% if (product.images && product.images.length> 0) { %>
+                                            <img src="<%= product.images[0].url %>" class="w-full h-full object-cover"
+                                                alt="<%= product.name %>">
+                                            <% } else { %>
+                                                <iconify-icon icon="lucide:watch" class="text-slate-300"
+                                                    width="32"></iconify-icon>
+                                                <% } %>
+                                                    <span
+                                                        class="absolute top-0 left-0 <%= index === 0 ? 'bg-yellow-400 text-yellow-900' : 'bg-slate-200 text-slate-600' %> text-[9px] font-bold px-1.5 py-0.5 rounded-br">#
+                                                        <%= index + 1 %></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-sm font-medium text-slate-900 truncate">
+                                            <%= product.name %>
+                                        </h3>
+                                        <div class="text-xs text-slate-500 mt-0.5">
+                                            <%= product.sold || 0 %> đã bán
+                                        </div>
+                                        <div class="mt-2">
+                                            <span class="text-sm font-semibold text-primary-600">
+                                                <%= (product.salePrice || product.price || 0).toLocaleString('vi-VN') %>
+                                                    ₫
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <div class="col-span-full text-center py-8 text-slate-400">Chưa có sản phẩm nào
+                                        </div>
+                                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div
+                    class="mt-8 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400 pb-4">
+                    <p>&copy; 2024 CHRONOS Admin System. All rights reserved.</p>
+                    <div class="flex items-center gap-4 mt-2 md:mt-0">
+                        <span class="flex items-center gap-1.5">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> API: OK
+                        </span>
+                        <span>Phiên bản v1.0.0</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden', 'opacity-0');
+                document.body.style.overflow = 'hidden';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            }
+        }
+    </script>
+</body>
+
+</html>

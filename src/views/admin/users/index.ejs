@@ -1,0 +1,310 @@
+<%- include('../partials/header', { currentPage: 'users' }) %>
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Quản lý người dùng</h1>
+            <p class="text-sm text-slate-500 mt-1">Tổng cộng <span class="font-medium text-slate-700">
+                    <%= totalUsers %>
+                </span> người dùng</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm animate-fade-in-up"
+        style="animation-delay: 100ms;">
+        <form action="/admin/users" method="GET" class="flex flex-wrap gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <div class="relative">
+                    <iconify-icon icon="lucide:search" class="absolute left-3 top-2.5 text-slate-400"
+                        width="16"></iconify-icon>
+                    <input type="text" name="search" value="<%= filters.search || '' %>"
+                        placeholder="Tìm tên, email, SĐT..." class="input-field pl-9">
+                </div>
+            </div>
+            <select name="role" class="input-field w-auto">
+                <option value="">Tất cả vai trò</option>
+                <option value="customer" <%=filters.role==='customer' ? 'selected' : '' %>>Khách hàng</option>
+                <option value="staff" <%=filters.role==='staff' ? 'selected' : '' %>>Nhân viên</option>
+                <option value="admin" <%=filters.role==='admin' ? 'selected' : '' %>>Quản trị viên</option>
+            </select>
+            <button type="submit" class="btn-primary">Lọc</button>
+            <a href="/admin/users" class="btn-secondary">Xóa lọc</a>
+        </form>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up"
+        style="animation-delay: 150ms;">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                    <tr>
+                        <th class="px-4 py-3">Người dùng</th>
+                        <th class="px-4 py-3">Email</th>
+                        <th class="px-4 py-3">SĐT</th>
+                        <th class="px-4 py-3">Vai trò</th>
+                        <th class="px-4 py-3">Ngày tham gia</th>
+                        <th class="px-4 py-3">Trạng thái</th>
+                        <th class="px-4 py-3 text-right">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% if (users && users.length> 0) { %>
+                        <% users.forEach(u=> { %>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+                                            <%= u.name ? u.name.charAt(0).toUpperCase() : 'U' %>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-slate-900">
+                                                <%= u.name || 'Chưa cập nhật' %>
+                                            </div>
+                                            <div class="text-xs text-slate-500">ID: <%= u._id.toString().slice(-8) %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 text-slate-600">
+                                    <%= u.email %>
+                                </td>
+                                <td class="px-4 py-3 text-slate-600">
+                                    <%= u.phone || '-' %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <select onchange="changeRole('<%= u._id %>', this.value)"
+                                        class="text-xs px-2 py-1 rounded border <%= u.role === 'admin' ? 'bg-purple-50 text-purple-700 border-purple-200' : u.role === 'staff' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-600 border-slate-200' %>"
+                                        <%=u._id.toString()===user._id.toString() ? 'disabled' : '' %>>
+                                        <option value="customer" <%=u.role==='customer' ? 'selected' : '' %>>Khách hàng
+                                        </option>
+                                        <option value="staff" <%=u.role==='staff' ? 'selected' : '' %>>Nhân viên
+                                        </option>
+                                        <option value="admin" <%=u.role==='admin' ? 'selected' : '' %>>Admin</option>
+                                    </select>
+                                </td>
+                                <td class="px-4 py-3 text-slate-500">
+                                    <%= new Date(u.createdAt).toLocaleDateString('vi-VN') %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= u.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700' %>">
+                                        <%= u.isActive ? 'Hoạt động' : 'Bị khóa' %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <!-- Toggle Status -->
+                                        <button onclick="toggleUserStatus('<%= u._id %>', <%= u.isActive %>)"
+                                            class="p-1.5 rounded transition-colors <%= u.isActive ? 'text-red-500 hover:bg-red-50' : 'text-emerald-500 hover:bg-emerald-50' %>"
+                                            title="<%= u.isActive ? 'Khóa tài khoản' : 'Mở khóa tài khoản' %>"
+                                            <%=u._id.toString()===user._id.toString() ? 'disabled' : '' %>>
+                                            <iconify-icon icon="<%= u.isActive ? 'lucide:lock' : 'lucide:unlock' %>"
+                                                width="16"></iconify-icon>
+                                        </button>
+
+                                        <!-- View Details Modal -->
+                                        <button
+                                            onclick="viewUser('<%= u._id %>', '<%= u.name || 'N/A' %>', '<%= u.email %>', '<%= u.phone || 'N/A' %>', '<%= u.role %>', '<%= u.isActive %>', '<%= new Date(u.createdAt).toLocaleString('vi-VN') %>')"
+                                            class="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-blue-50 rounded transition-colors"
+                                            title="Xem chi tiết">
+                                            <iconify-icon icon="lucide:eye" width="16"></iconify-icon>
+                                        </button>
+
+                                        <!-- Delete -->
+                                        <% if (u._id.toString() !==user._id.toString() && u.role !=='admin' ) { %>
+                                            <button onclick="deleteUser('<%= u._id %>', '<%= u.name || u.email %>')"
+                                                class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                title="Xóa người dùng">
+                                                <iconify-icon icon="lucide:trash-2" width="16"></iconify-icon>
+                                            </button>
+                                            <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" class="px-4 py-12 text-center text-slate-400">
+                                            <iconify-icon icon="lucide:users" width="48" class="mb-2"></iconify-icon>
+                                            <p>Chưa có người dùng nào</p>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages> 1) { %>
+            <div class="px-4 py-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Trang <span class="font-medium">
+                        <%= currentPage %>
+                    </span> / <span class="font-medium">
+                        <%= totalPages %>
+                    </span></span>
+                <div class="flex gap-1">
+                    <% if (currentPage> 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>&search=<%= filters.search || '' %>&role=<%= filters.role || '' %>"
+                            class="px-2 py-1 border border-slate-200 rounded text-slate-600 hover:bg-slate-50">
+                            <iconify-icon icon="lucide:chevron-left" width="14"></iconify-icon>
+                        </a>
+                        <% } %>
+                            <% for (let i=1; i <=Math.min(5, totalPages); i++) { %>
+                                <a href="?page=<%= i %>&search=<%= filters.search || '' %>&role=<%= filters.role || '' %>"
+                                    class="px-2 py-1 border rounded text-xs font-medium <%= currentPage === i ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-200 text-slate-600 hover:bg-slate-50' %>">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>&search=<%= filters.search || '' %>&role=<%= filters.role || '' %>"
+                                            class="px-2 py-1 border border-slate-200 rounded text-slate-600 hover:bg-slate-50">
+                                            <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                                        </a>
+                                        <% } %>
+                </div>
+            </div>
+            <% } %>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userDetailModal"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-slate-900">Chi tiết người dùng</h2>
+                <button onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600">
+                    <iconify-icon icon="lucide:x" width="20"></iconify-icon>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="flex items-center gap-4 pb-4 border-b border-slate-100">
+                    <div id="modal-avatar"
+                        class="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl">
+                        U
+                    </div>
+                    <div>
+                        <div id="modal-name" class="text-xl font-semibold text-slate-900">Tên người dùng</div>
+                        <div id="modal-role" class="text-sm text-slate-500">Vai trò</div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Email</span>
+                        <span id="modal-email" class="font-medium text-slate-900">email@example.com</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Số điện thoại</span>
+                        <span id="modal-phone" class="font-medium text-slate-900">-</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Trạng thái</span>
+                        <span id="modal-status" class="font-medium">Hoạt động</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Ngày tham gia</span>
+                        <span id="modal-date" class="font-medium text-slate-900">01/01/2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle user status (lock/unlock)
+        async function toggleUserStatus(id, currentStatus) {
+            const action = currentStatus ? 'khóa' : 'mở khóa';
+            if (!confirm(`Bạn có chắc muốn ${action} tài khoản này?`)) return;
+
+            try {
+                const res = await fetch(`/admin/users/${id}/toggle-status`, { method: 'PUT' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        // Change user role
+        async function changeRole(id, newRole) {
+            if (!confirm(`Bạn có chắc muốn đổi vai trò thành ${newRole === 'admin' ? 'Quản trị viên' : newRole === 'staff' ? 'Nhân viên' : 'Khách hàng'}?`)) {
+                location.reload();
+                return;
+            }
+
+            try {
+                const res = await fetch(`/admin/users/${id}/role`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: newRole })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                    location.reload();
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+                location.reload();
+            }
+        }
+
+        // Delete user
+        async function deleteUser(id, name) {
+            if (!confirm(`Bạn có chắc muốn xóa người dùng "${name}"? Hành động này không thể hoàn tác!`)) return;
+
+            try {
+                const res = await fetch(`/admin/users/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        // View user details
+        function viewUser(id, name, email, phone, role, isActive, createdAt) {
+            document.getElementById('modal-avatar').textContent = name.charAt(0).toUpperCase();
+            document.getElementById('modal-name').textContent = name;
+            document.getElementById('modal-email').textContent = email;
+            document.getElementById('modal-phone').textContent = phone;
+            document.getElementById('modal-date').textContent = createdAt;
+
+            const roleText = role === 'admin' ? 'Quản trị viên' : role === 'staff' ? 'Nhân viên' : 'Khách hàng';
+            document.getElementById('modal-role').textContent = roleText;
+
+            const statusEl = document.getElementById('modal-status');
+            if (isActive === 'true') {
+                statusEl.textContent = 'Hoạt động';
+                statusEl.className = 'font-medium text-emerald-600';
+            } else {
+                statusEl.textContent = 'Bị khóa';
+                statusEl.className = 'font-medium text-red-600';
+            }
+
+            document.getElementById('userDetailModal').classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userDetailModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('userDetailModal').addEventListener('click', function (e) {
+            if (e.target === this) closeUserModal();
+        });
+    </script>
+
+    <%- include('../partials/footer') %>

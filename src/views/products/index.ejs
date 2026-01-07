@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ sưu tập | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-16 bg-navy">
+            <div class="container mx-auto px-6">
+                <nav class="flex items-center gap-2 text-sm text-muted mb-6">
+                    <a href="/" class="hover:text-gold">Trang chủ</a>
+                    <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                    <span class="text-white">Bộ sưu tập</span>
+                </nav>
+                <h1 class="text-4xl md:text-5xl font-display font-semibold text-white mb-4">Bộ sưu tập</h1>
+                <p class="text-muted">Tìm thấy <span class="text-gold">
+                        <%= totalProducts %>
+                    </span> sản phẩm</p>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark min-h-screen">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col lg:flex-row gap-8">
+
+                    <!-- Sidebar -->
+                    <aside class="lg:w-64 flex-shrink-0">
+                        <div class="glass-panel rounded-xl p-6 sticky top-28">
+                            <h3 class="text-white font-display font-medium mb-6">Bộ lọc</h3>
+                            <form action="/products" method="GET">
+                                <div class="mb-6">
+                                    <h4 class="text-xs uppercase tracking-widest text-muted mb-3">Thương hiệu</h4>
+                                    <% if (typeof brands !=='undefined' ) { %>
+                                        <% brands.forEach(function(brand) { %>
+                                            <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                                                <input type="radio" name="brand" value="<%= brand %>"
+                                                    <%=filters.brand===brand ? 'checked' : '' %> class="text-gold">
+                                                <span class="text-sm text-muted hover:text-white">
+                                                    <%= brand %>
+                                                </span>
+                                            </label>
+                                            <% }); %>
+                                                <% } %>
+                                </div>
+                                <div class="mb-6">
+                                    <h4 class="text-xs uppercase tracking-widest text-muted mb-3">Giới tính</h4>
+                                    <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                                        <input type="radio" name="gender" value="Nam" <%=filters.gender==='Nam'
+                                            ? 'checked' : '' %>>
+                                        <span class="text-sm text-muted">Nam</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                                        <input type="radio" name="gender" value="Nữ" <%=filters.gender==='Nữ'
+                                            ? 'checked' : '' %>>
+                                        <span class="text-sm text-muted">Nữ</span>
+                                    </label>
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-gold text-dark font-bold py-3 rounded text-sm uppercase">Lọc</button>
+                                <a href="/products"
+                                    class="block text-center text-sm text-muted mt-3 hover:text-white">Xóa bộ lọc</a>
+                            </form>
+                        </div>
+                    </aside>
+
+                    <!-- Products Grid -->
+                    <div class="flex-1">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <% if (products && products.length> 0) { %>
+                                <% products.forEach(function(product) { %>
+                                    <div class="group">
+                                        <div
+                                            class="bg-navy/40 rounded-xl overflow-hidden border border-white/5 relative">
+                                            <% if (product.salePrice) { %>
+                                                <div class="absolute top-3 left-3 z-10"><span
+                                                        class="bg-red-500/90 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">-
+                                                        <%= product.discountPercent %>%
+                                                    </span></div>
+                                                <% } %>
+                                                    <% if (product.isNewArrival) { %>
+                                                        <div class="absolute top-3 right-3 z-10"><span
+                                                                class="bg-cyan/10 text-cyan text-[10px] font-bold px-2 py-1 rounded uppercase">New</span>
+                                                        </div>
+                                                        <% } %>
+                                                            <div
+                                                                class="relative aspect-[4/5] bg-[#121620] overflow-hidden">
+                                                                <a href="/products/<%= product.slug %>">
+                                                                    <img src="<%= product.primaryImage || '/images/no-image.png' %>"
+                                                                        alt="<%= product.name %>"
+                                                                        class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
+                                                                </a>
+                                                                <div
+                                                                    class="absolute inset-x-0 bottom-4 px-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-2">
+                                                                    <button onclick="addToCart('<%= product._id %>')"
+                                                                        class="flex-1 bg-white text-dark py-2.5 text-xs font-bold uppercase rounded hover:bg-gold transition-colors">Thêm
+                                                                        vào giỏ</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="p-5">
+                                                                <span
+                                                                    class="text-gold text-xs font-medium uppercase tracking-wider">
+                                                                    <%= product.brand %>
+                                                                </span>
+                                                                <a href="/products/<%= product.slug %>">
+                                                                    <h3
+                                                                        class="text-white font-medium text-lg mt-1 mb-2 group-hover:text-gold transition-colors line-clamp-2">
+                                                                        <%= product.name %>
+                                                                    </h3>
+                                                                </a>
+                                                                <div class="flex items-center gap-3">
+                                                                    <% if (product.salePrice) { %>
+                                                                        <span class="text-gold font-mono font-medium">
+                                                                            <%= product.salePrice.toLocaleString('vi-VN')
+                                                                                %>₫
+                                                                        </span>
+                                                                        <span class="text-muted text-sm line-through">
+                                                                            <%= product.price.toLocaleString('vi-VN') %>
+                                                                                ₫
+                                                                        </span>
+                                                                        <% } else { %>
+                                                                            <span
+                                                                                class="text-gold font-mono font-medium">
+                                                                                <%= product.price.toLocaleString('vi-VN')
+                                                                                    %>₫
+                                                                            </span>
+                                                                            <% } %>
+                                                                </div>
+                                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div class="col-span-full text-center py-20">
+                                                <iconify-icon icon="lucide:search-x" width="48"
+                                                    class="text-muted mb-4"></iconify-icon>
+                                                <p class="text-muted">Không tìm thấy sản phẩm nào</p>
+                                            </div>
+                                            <% } %>
+                        </div>
+
+                        <% if (totalPages> 1) { %>
+                            <div class="flex justify-center gap-2 mt-12">
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <a href="?page=<%= i %>"
+                                        class="w-10 h-10 flex items-center justify-center border rounded text-sm <%= currentPage === i ? 'bg-gold border-gold text-dark font-bold' : 'border-white/10 text-muted hover:border-gold' %>">
+                                        <%= i %>
+                                    </a>
+                                    <% } %>
+                            </div>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về chúng tôi | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <!-- Hero -->
+        <section class="pt-32 pb-20 bg-gradient-to-b from-navy to-dark relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop"
+                    class="w-full h-full object-cover">
+            </div>
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <span class="text-gold text-xs font-bold uppercase tracking-widest mb-4 block">Since 2020</span>
+                <h1 class="text-4xl md:text-6xl font-display font-semibold text-white mb-6">Về CHRONOS</h1>
+                <p class="text-muted text-lg max-w-2xl mx-auto">Nơi thời gian gặp gỡ nghệ thuật. Chúng tôi mang đến
+                    những chiếc đồng hồ không chỉ đo thời gian, mà còn kể câu chuyện của bạn.</p>
+            </div>
+        </section>
+
+        <!-- Story -->
+        <section class="py-24 bg-dark">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <span class="text-gold text-xs font-bold uppercase tracking-widest mb-4 block">Câu chuyện của
+                            chúng tôi</span>
+                        <h2 class="text-3xl md:text-4xl font-display font-semibold text-white mb-6">Đam mê chế tác, tâm
+                            huyết từng chi tiết</h2>
+                        <div class="space-y-4 text-muted leading-relaxed">
+                            <p>CHRONOS được thành lập với niềm đam mê mãnh liệt dành cho nghệ thuật chế tác đồng hồ.
+                                Chúng tôi tin rằng một chiếc đồng hồ không chỉ là công cụ đo thời gian, mà còn là biểu
+                                tượng của phong cách, cá tính và đẳng cấp.</p>
+                            <p>Từ những thương hiệu huyền thoại như Rolex, Omega, đến những cái tên đang định hình tương
+                                lai như Tissot, Seiko - chúng tôi tuyển chọn kỹ lưỡng từng sản phẩm để mang đến trải
+                                nghiệm tốt nhất cho khách hàng.</p>
+                            <p>Với đội ngũ chuyên gia giàu kinh nghiệm và tiêu chuẩn dịch vụ khắt khe, CHRONOS cam kết
+                                đồng hành cùng bạn trong hành trình tìm kiếm chiếc đồng hồ hoàn hảo.</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1594576722512-582bcd46fba3?q=80&w=1000&auto=format&fit=crop"
+                            class="rounded-2xl shadow-2xl">
+                        <div class="absolute -bottom-6 -left-6 glass-panel p-6 rounded-xl">
+                            <div class="text-4xl font-display font-bold text-gold mb-1">5+</div>
+                            <div class="text-sm text-muted">Năm kinh nghiệm</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values -->
+        <section class="py-24 bg-navy">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="text-gold text-xs font-bold uppercase tracking-widest mb-4 block">Giá trị cốt
+                        lõi</span>
+                    <h2 class="text-3xl md:text-4xl font-display font-semibold text-white">Điều làm nên CHRONOS</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-2xl text-center">
+                        <div class="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <iconify-icon icon="lucide:gem" class="text-gold text-3xl"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl font-display font-medium text-white mb-3">Chất lượng</h3>
+                        <p class="text-muted text-sm">100% sản phẩm chính hãng với đầy đủ giấy tờ, hộp, phụ kiện từ nhà
+                            sản xuất.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl text-center">
+                        <div class="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <iconify-icon icon="lucide:shield-check" class="text-gold text-3xl"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl font-display font-medium text-white mb-3">Uy tín</h3>
+                        <p class="text-muted text-sm">Bảo hành chính hãng cùng chế độ hậu mãi chu đáo, đảm bảo quyền lợi
+                            khách hàng.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl text-center">
+                        <div class="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <iconify-icon icon="lucide:heart" class="text-gold text-3xl"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl font-display font-medium text-white mb-3">Tận tâm</h3>
+                        <p class="text-muted text-sm">Đội ngũ tư vấn chuyên nghiệp, sẵn sàng hỗ trợ bạn 24/7 trong mọi
+                            thắc mắc.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="py-24 bg-dark border-t border-white/5">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl md:text-5xl font-display font-bold text-gold mb-2">10K+</div>
+                        <div class="text-muted text-sm">Khách hàng hài lòng</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-display font-bold text-gold mb-2">500+</div>
+                        <div class="text-muted text-sm">Sản phẩm chính hãng</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-display font-bold text-gold mb-2">20+</div>
+                        <div class="text-muted text-sm">Thương hiệu đối tác</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-display font-bold text-gold mb-2">5★</div>
+                        <div class="text-muted text-sm">Đánh giá trung bình</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="py-24 bg-navy">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-display font-semibold text-white mb-6">Khám phá bộ sưu tập ngay hôm
+                    nay</h2>
+                <p class="text-muted mb-8 max-w-xl mx-auto">Hãy để chúng tôi giúp bạn tìm chiếc đồng hồ hoàn hảo dành
+                    riêng cho mình.</p>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <a href="/products"
+                        class="inline-flex items-center justify-center gap-2 bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 px-8 rounded text-sm uppercase tracking-wide">
+                        <iconify-icon icon="lucide:shopping-bag"></iconify-icon>Xem sản phẩm
+                    </a>
+                    <a href="/contact"
+                        class="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/20 text-white font-medium py-4 px-8 rounded text-sm uppercase tracking-wide hover:bg-white/10">
+                        <iconify-icon icon="lucide:phone"></iconify-icon>Liên hệ tư vấn
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

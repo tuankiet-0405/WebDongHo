@@ -1,0 +1,163 @@
+<%- include('../partials/header', { currentPage: 'orders' }) %>
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Quản lý đơn hàng</h1>
+            <p class="text-sm text-slate-500 mt-1">Tổng cộng <span class="font-medium text-slate-700">
+                    <%= totalOrders %>
+                </span> đơn hàng</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm animate-fade-in-up"
+        style="animation-delay: 100ms;">
+        <form action="/admin/orders" method="GET" class="flex flex-wrap gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <div class="relative">
+                    <iconify-icon icon="lucide:search" class="absolute left-3 top-2.5 text-slate-400"
+                        width="16"></iconify-icon>
+                    <input type="text" name="search" value="<%= filters.search || '' %>"
+                        placeholder="Tìm mã đơn, SĐT, email..." class="input-field pl-9">
+                </div>
+            </div>
+            <select name="status" class="input-field w-auto">
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending" <%=filters.status==='pending' ? 'selected' : '' %>>Chờ xác nhận</option>
+                <option value="confirmed" <%=filters.status==='confirmed' ? 'selected' : '' %>>Đã xác nhận</option>
+                <option value="shipping" <%=filters.status==='shipping' ? 'selected' : '' %>>Đang giao</option>
+                <option value="delivered" <%=filters.status==='delivered' ? 'selected' : '' %>>Hoàn tất</option>
+                <option value="cancelled" <%=filters.status==='cancelled' ? 'selected' : '' %>>Đã hủy</option>
+            </select>
+            <button type="submit" class="btn-primary">Lọc</button>
+            <a href="/admin/orders" class="btn-secondary">Xóa lọc</a>
+        </form>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up"
+        style="animation-delay: 150ms;">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-semibold">
+                    <tr>
+                        <th class="px-4 py-3">Mã đơn</th>
+                        <th class="px-4 py-3">Khách hàng</th>
+                        <th class="px-4 py-3">Sản phẩm</th>
+                        <th class="px-4 py-3">Tổng tiền</th>
+                        <th class="px-4 py-3">Thanh toán</th>
+                        <th class="px-4 py-3">Trạng thái</th>
+                        <th class="px-4 py-3">Ngày đặt</th>
+                        <th class="px-4 py-3 text-right">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% if (orders && orders.length> 0) { %>
+                        <% orders.forEach(order=> { %>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="px-4 py-3 font-medium text-slate-900">#<%= order.orderNumber ||
+                                        order._id.toString().slice(-6).toUpperCase() %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">
+                                            <%= order.customer && order.customer.name ?
+                                                order.customer.name.charAt(0).toUpperCase() : 'K' %>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-slate-900">
+                                                <%= order.customer ? order.customer.name : 'Khách' %>
+                                            </div>
+                                            <div class="text-xs text-slate-500">
+                                                <%= order.customer ? order.customer.phone : '' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 text-slate-600">
+                                    <%= order.items ? order.items.length : 0 %> sản phẩm
+                                </td>
+                                <td class="px-4 py-3 font-medium text-slate-900">
+                                    <%= (order.totalAmount || 0).toLocaleString('vi-VN') %>₫
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= order.paymentStatus === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-yellow-50 text-yellow-700' %>">
+                                        <%= order.paymentStatus==='paid' ? 'Đã thanh toán' : 'Chưa TT' %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <% let statusClass='' ; let statusText='' ; if (order.status==='pending' ) {
+                                        statusClass='bg-yellow-50 text-yellow-700 border border-yellow-200' ;
+                                        statusText='Chờ xác nhận' ; } else if (order.status==='confirmed' ) {
+                                        statusClass='bg-blue-50 text-blue-700 border border-blue-200' ;
+                                        statusText='Đã xác nhận' ; } else if (order.status==='shipping' ) {
+                                        statusClass='bg-indigo-50 text-indigo-700 border border-indigo-200' ;
+                                        statusText='Đang giao' ; } else if (order.status==='delivered' ) {
+                                        statusClass='bg-emerald-50 text-emerald-700 border border-emerald-200' ;
+                                        statusText='Hoàn tất' ; } else {
+                                        statusClass='bg-red-50 text-red-700 border border-red-200' ; statusText='Đã hủy'
+                                        ; } %>
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= statusClass %>">
+                                            <%= statusText %>
+                                        </span>
+                                </td>
+                                <td class="px-4 py-3 text-slate-500">
+                                    <%= new Date(order.createdAt).toLocaleDateString('vi-VN') %>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <a href="/admin/orders/<%= order._id %>"
+                                        class="inline-flex items-center gap-1 text-xs text-primary-600 hover:underline font-medium">
+                                        <iconify-icon icon="lucide:eye" width="14"></iconify-icon> Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="px-4 py-12 text-center text-slate-400">
+                                            <iconify-icon icon="lucide:inbox" width="48" class="mb-2"></iconify-icon>
+                                            <p>Chưa có đơn hàng nào</p>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages> 1) { %>
+            <div class="px-4 py-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Trang <span class="font-medium">
+                        <%= currentPage %>
+                    </span> / <span class="font-medium">
+                        <%= totalPages %>
+                    </span></span>
+                <div class="flex gap-1">
+                    <% if (currentPage> 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>"
+                            class="px-2 py-1 border border-slate-200 rounded text-slate-600 hover:bg-slate-50">
+                            <iconify-icon icon="lucide:chevron-left" width="14"></iconify-icon>
+                        </a>
+                        <% } %>
+                            <% for (let i=1; i <=Math.min(5, totalPages); i++) { %>
+                                <a href="?page=<%= i %>"
+                                    class="px-2 py-1 border rounded text-xs font-medium <%= currentPage === i ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-200 text-slate-600 hover:bg-slate-50' %>">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>"
+                                            class="px-2 py-1 border border-slate-200 rounded text-slate-600 hover:bg-slate-50">
+                                            <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                                        </a>
+                                        <% } %>
+                </div>
+            </div>
+            <% } %>
+    </div>
+
+    <%- include('../partials/footer') %>

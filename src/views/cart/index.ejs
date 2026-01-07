@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-8 bg-navy">
+            <div class="container mx-auto px-6">
+                <h1 class="text-3xl md:text-4xl font-display font-semibold text-white">Giỏ hàng</h1>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark min-h-[60vh]">
+            <div class="container mx-auto px-6">
+                <% if (cart && cart.items && cart.items.length> 0) { %>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <!-- Cart Items -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <% cart.items.forEach(function(item) { %>
+                                <div class="glass-panel rounded-xl p-4 md:p-6 flex gap-4 md:gap-6">
+                                    <div
+                                        class="w-24 h-24 md:w-32 md:h-32 bg-navy rounded-lg overflow-hidden flex-shrink-0">
+                                        <img src="<%= item.image %>" alt="<%= item.name %>"
+                                            class="w-full h-full object-contain p-2">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <a href="/products/<%= item.slug %>"
+                                                class="text-white font-medium hover:text-gold">
+                                                <%= item.name %>
+                                            </a>
+                                            <button onclick="removeFromCart('<%= item.product %>')"
+                                                class="text-muted hover:text-red-400 ml-4">
+                                                <iconify-icon icon="lucide:trash-2" width="18"></iconify-icon>
+                                            </button>
+                                        </div>
+                                        <p class="text-gold font-mono mb-4">
+                                            <%= item.price.toLocaleString('vi-VN') %>₫
+                                        </p>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center border border-white/10 rounded">
+                                                <button
+                                                    onclick="updateCart('<%= item.product %>', <%= item.quantity - 1 %>)"
+                                                    class="w-8 h-8 text-muted hover:text-white">
+                                                    <iconify-icon icon="lucide:minus" width="14"></iconify-icon>
+                                                </button>
+                                                <span class="w-10 text-center text-white text-sm">
+                                                    <%= item.quantity %>
+                                                </span>
+                                                <button
+                                                    onclick="updateCart('<%= item.product %>', <%= item.quantity + 1 %>)"
+                                                    class="w-8 h-8 text-muted hover:text-white">
+                                                    <iconify-icon icon="lucide:plus" width="14"></iconify-icon>
+                                                </button>
+                                            </div>
+                                            <span class="text-white font-mono font-medium">
+                                                <%= item.subtotal.toLocaleString('vi-VN') %>₫
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+
+                                    <div class="flex flex-col md:flex-row justify-between gap-4 pt-4">
+                                        <a href="/products"
+                                            class="flex items-center justify-center gap-2 text-muted hover:text-white">
+                                            <iconify-icon icon="lucide:arrow-left"></iconify-icon>Tiếp tục mua sắm
+                                        </a>
+                                        <button onclick="clearCart()"
+                                            class="flex items-center justify-center gap-2 text-muted hover:text-red-400">
+                                            <iconify-icon icon="lucide:trash-2"></iconify-icon>Xóa giỏ hàng
+                                        </button>
+                                    </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="lg:col-span-1">
+                            <div class="glass-panel rounded-xl p-6 sticky top-28">
+                                <h3 class="text-lg font-display font-medium text-white mb-6">Tóm tắt đơn hàng</h3>
+
+                                <div class="mb-6">
+                                    <label class="block text-sm text-muted mb-2">Mã giảm giá</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="couponCode" placeholder="Nhập mã"
+                                            class="flex-1 bg-dark border border-white/10 rounded px-4 py-2.5 text-white text-sm focus:border-gold outline-none">
+                                        <button onclick="applyCoupon()"
+                                            class="px-4 py-2.5 bg-white/5 border border-white/10 rounded text-white text-sm hover:border-gold">Áp
+                                            dụng</button>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-muted">Tạm tính</span>
+                                        <span class="text-white">
+                                            <%= cart.totalPrice.toLocaleString('vi-VN') %>₫
+                                        </span>
+                                    </div>
+                                    <% if (cart.coupon) { %>
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-green-400">Giảm giá (<%= cart.coupon.code %>)</span>
+                                            <span class="text-green-400">-<%=
+                                                    cart.coupon.discount.toLocaleString('vi-VN') %>₫</span>
+                                        </div>
+                                        <% } %>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-muted">Phí vận chuyển</span>
+                                                <% var isFreeShipping=cart.totalPrice>= 2000000; %>
+                                                    <span class="text-white">
+                                                        <%= isFreeShipping ? 'Miễn phí' : '30.000₫' %>
+                                                    </span>
+                                            </div>
+                                            <div class="h-px bg-white/10"></div>
+                                            <div class="flex justify-between">
+                                                <span class="text-white font-medium">Tổng cộng</span>
+                                                <% var shipping=cart.totalPrice>= 2000000 ? 0 : 30000;
+                                                    var discount = cart.coupon ? cart.coupon.discount : 0;
+                                                    var total = cart.totalPrice + shipping - discount;
+                                                    %>
+                                                    <span class="text-2xl font-mono font-bold text-gold">
+                                                        <%= total.toLocaleString('vi-VN') %>₫
+                                                    </span>
+                                            </div>
+                                </div>
+
+                                <a href="/orders/checkout"
+                                    class="block w-full bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 rounded text-sm uppercase tracking-wide text-center mb-4">
+                                    <iconify-icon icon="lucide:lock" class="mr-2"></iconify-icon>Tiến hành thanh toán
+                                </a>
+
+                                <div class="flex items-center justify-center gap-2 text-xs text-muted">
+                                    <iconify-icon icon="lucide:shield-check"></iconify-icon>Thanh toán an toàn
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div class="text-center py-20">
+                            <iconify-icon icon="lucide:shopping-bag" width="64" class="text-muted mb-6"></iconify-icon>
+                            <h3 class="text-2xl font-display font-medium text-white mb-4">Giỏ hàng trống</h3>
+                            <p class="text-muted mb-8">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+                            <a href="/products"
+                                class="inline-flex items-center gap-2 bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 px-8 rounded text-sm uppercase tracking-wide">
+                                <iconify-icon icon="lucide:shopping-bag"></iconify-icon>Mua sắm ngay
+                            </a>
+                        </div>
+                        <% } %>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

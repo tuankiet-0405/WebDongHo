@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= product.name %> | CHRONOS
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-8 bg-navy">
+            <div class="container mx-auto px-6">
+                <nav class="flex items-center gap-2 text-sm text-muted">
+                    <a href="/" class="hover:text-gold">Trang chủ</a>
+                    <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                    <a href="/products" class="hover:text-gold">Sản phẩm</a>
+                    <iconify-icon icon="lucide:chevron-right" width="14"></iconify-icon>
+                    <span class="text-white">
+                        <%= product.name %>
+                    </span>
+                </nav>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Gallery -->
+                    <div class="space-y-4">
+                        <div class="aspect-square bg-navy rounded-2xl overflow-hidden border border-white/5">
+                            <img id="mainImage" src="<%= product.primaryImage || '/images/no-image.png' %>"
+                                alt="<%= product.name %>" class="w-full h-full object-contain p-8">
+                        </div>
+                        <div class="flex gap-3 overflow-x-auto">
+                            <% if (product.images && product.images.length> 0) { %>
+                                <% product.images.forEach(function(img, idx) { %>
+                                    <button onclick="document.getElementById('mainImage').src='<%= img.url %>'"
+                                        class="w-20 h-20 flex-shrink-0 bg-navy rounded-lg overflow-hidden border-2 <%= idx === 0 ? 'border-gold' : 'border-white/10' %>">
+                                        <img src="<%= img.url %>" class="w-full h-full object-contain p-2">
+                                    </button>
+                                    <% }); %>
+                                        <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="lg:pl-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-gold text-sm font-medium uppercase tracking-widest">
+                                <%= product.brand %>
+                            </span>
+                            <% if (product.stock> 0) { %>
+                                <span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded">Còn hàng</span>
+                                <% } else { %>
+                                    <span class="px-2 py-1 bg-red-500/10 text-red-400 text-xs rounded">Hết hàng</span>
+                                    <% } %>
+                        </div>
+
+                        <h1 class="text-3xl md:text-4xl font-display font-semibold text-white mb-6">
+                            <%= product.name %>
+                        </h1>
+
+                        <!-- Rating -->
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="flex text-gold">
+                                <% var avgRating=product.rating && product.rating.average ?
+                                    Math.round(product.rating.average) : 0; %>
+                                    <% for (var i=0; i < 5; i++) { %>
+                                        <iconify-icon icon="lucide:star" width="16"
+                                            class="<%= i < avgRating ? '' : 'opacity-30' %>"></iconify-icon>
+                                        <% } %>
+                            </div>
+                            <span class="text-muted text-sm">
+                                <%= product.rating && product.rating.average ? product.rating.average.toFixed(1) : '0.0'
+                                    %>
+                                    (<%= product.rating && product.rating.count ? product.rating.count : 0 %> đánh giá)
+                            </span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="flex items-end gap-4 mb-8">
+                            <% if (product.salePrice) { %>
+                                <span class="text-4xl font-mono font-bold text-gold">
+                                    <%= product.salePrice.toLocaleString('vi-VN') %>₫
+                                </span>
+                                <span class="text-xl text-muted line-through">
+                                    <%= product.price.toLocaleString('vi-VN') %>₫
+                                </span>
+                                <% var discountPct=Math.round((1 - product.salePrice / product.price) * 100); %>
+                                    <span class="px-3 py-1 bg-red-500 text-white text-sm font-bold rounded">-<%=
+                                            discountPct %>%</span>
+                                    <% } else { %>
+                                        <span class="text-4xl font-mono font-bold text-gold">
+                                            <%= product.price.toLocaleString('vi-VN') %>₫
+                                        </span>
+                                        <% } %>
+                        </div>
+
+                        <!-- Description -->
+                        <% if (product.shortDescription) { %>
+                            <p class="text-muted leading-relaxed mb-8 border-l-2 border-gold/50 pl-4">
+                                <%= product.shortDescription %>
+                            </p>
+                            <% } %>
+
+                                <!-- Add to Cart -->
+                                <div class="flex gap-4 mb-8">
+                                    <div class="flex items-center border border-white/10 rounded">
+                                        <button onclick="changeQty(-1)"
+                                            class="w-12 h-12 text-muted hover:text-white"><iconify-icon
+                                                icon="lucide:minus"></iconify-icon></button>
+                                        <input type="number" id="quantity" value="1" min="1" max="<%= product.stock %>"
+                                            class="w-16 h-12 bg-transparent text-white text-center focus:outline-none">
+                                        <button onclick="changeQty(1)"
+                                            class="w-12 h-12 text-muted hover:text-white"><iconify-icon
+                                                icon="lucide:plus"></iconify-icon></button>
+                                    </div>
+                                    <button
+                                        onclick="addToCart('<%= product._id %>', document.getElementById('quantity').value)"
+                                        class="flex-1 bg-gold hover:bg-[#C5A354] text-dark font-bold py-3 px-8 rounded text-sm uppercase tracking-wide transition-colors flex items-center justify-center gap-2"
+                                        <% if (product.stock <=0) { %>disabled<% } %>>
+                                            <iconify-icon icon="lucide:shopping-bag"></iconify-icon>
+                                            Thêm vào giỏ
+                                    </button>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="grid grid-cols-2 gap-4 mb-8">
+                                    <div class="glass-panel p-4 rounded-lg flex items-center gap-3">
+                                        <iconify-icon icon="lucide:truck" class="text-gold text-xl"></iconify-icon>
+                                        <div>
+                                            <p class="text-white text-sm font-medium">Miễn phí ship</p>
+                                            <p class="text-muted text-xs">Đơn từ 2 triệu</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-4 rounded-lg flex items-center gap-3">
+                                        <iconify-icon icon="lucide:shield-check"
+                                            class="text-gold text-xl"></iconify-icon>
+                                        <div>
+                                            <p class="text-white text-sm font-medium">Bảo hành</p>
+                                            <p class="text-muted text-xs">
+                                                <%= product.specifications && product.specifications.warranty ?
+                                                    product.specifications.warranty : '24 tháng' %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-sm text-muted space-y-1">
+                                    <p>SKU: <span class="text-white">
+                                            <%= product.sku %>
+                                        </span></p>
+                                    <% if (product.category) { %>
+                                        <p>Danh mục: <a href="/categories/<%= product.category.slug %>"
+                                                class="text-gold hover:underline">
+                                                <%= product.category.name %>
+                                            </a></p>
+                                        <% } %>
+                                </div>
+                    </div>
+                </div>
+
+                <!-- Specs -->
+                <% if (product.specifications) { %>
+                    <div class="mt-16">
+                        <h3 class="text-2xl font-display font-semibold text-white mb-8">Thông số kỹ thuật</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="glass-panel rounded-xl overflow-hidden">
+                                <table class="w-full">
+                                    <% if (product.specifications.movement) { %>
+                                        <tr class="border-b border-white/5">
+                                            <td class="px-6 py-4 text-muted">Loại máy</td>
+                                            <td class="px-6 py-4 text-white">
+                                                <%= product.specifications.movement %>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                            <% if (product.specifications.caseMaterial) { %>
+                                                <tr class="border-b border-white/5">
+                                                    <td class="px-6 py-4 text-muted">Chất liệu vỏ</td>
+                                                    <td class="px-6 py-4 text-white">
+                                                        <%= product.specifications.caseMaterial %>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <% if (product.specifications.caseSize) { %>
+                                                        <tr class="border-b border-white/5">
+                                                            <td class="px-6 py-4 text-muted">Kích thước</td>
+                                                            <td class="px-6 py-4 text-white">
+                                                                <%= product.specifications.caseSize %>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                                            <% if (product.specifications.bandMaterial) { %>
+                                                                <tr>
+                                                                    <td class="px-6 py-4 text-muted">Chất liệu dây</td>
+                                                                    <td class="px-6 py-4 text-white">
+                                                                        <%= product.specifications.bandMaterial %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% } %>
+                                </table>
+                            </div>
+                            <div class="glass-panel rounded-xl overflow-hidden">
+                                <table class="w-full">
+                                    <% if (product.specifications.waterResistance) { %>
+                                        <tr class="border-b border-white/5">
+                                            <td class="px-6 py-4 text-muted">Chống nước</td>
+                                            <td class="px-6 py-4 text-white">
+                                                <%= product.specifications.waterResistance %>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                            <% if (product.specifications.crystalType) { %>
+                                                <tr class="border-b border-white/5">
+                                                    <td class="px-6 py-4 text-muted">Loại kính</td>
+                                                    <td class="px-6 py-4 text-white">
+                                                        <%= product.specifications.crystalType %>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <% if (product.specifications.dialColor) { %>
+                                                        <tr class="border-b border-white/5">
+                                                            <td class="px-6 py-4 text-muted">Màu mặt số</td>
+                                                            <td class="px-6 py-4 text-white">
+                                                                <%= product.specifications.dialColor %>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                                            <% if (product.specifications.gender) { %>
+                                                                <tr>
+                                                                    <td class="px-6 py-4 text-muted">Giới tính</td>
+                                                                    <td class="px-6 py-4 text-white">
+                                                                        <%= product.specifications.gender %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% } %>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                        <!-- Description -->
+                        <div class="mt-16">
+                            <h3 class="text-2xl font-display font-semibold text-white mb-8">Mô tả sản phẩm</h3>
+                            <div class="text-muted leading-relaxed max-w-3xl">
+                                <%= product.description %>
+                            </div>
+                        </div>
+
+                        <!-- Reviews Section -->
+                        <div class="mt-16">
+                            <h3 class="text-2xl font-display font-semibold text-white mb-8">Đánh giá sản phẩm</h3>
+
+                            <!-- Review Summary -->
+                            <div class="glass-panel rounded-xl p-8 mb-8">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <div class="text-center">
+                                        <div class="text-6xl font-display font-bold text-gold mb-2">
+                                            <%= product.rating && product.rating.average ?
+                                                product.rating.average.toFixed(1) : '0.0' %>
+                                        </div>
+                                        <div class="flex justify-center text-gold mb-2">
+                                            <% var avgRating=product.rating && product.rating.average ?
+                                                Math.round(product.rating.average) : 0; %>
+                                                <% for (var i=0; i < 5; i++) { %>
+                                                    <iconify-icon icon="lucide:star" width="20"
+                                                        class="<%= i < avgRating ? '' : 'opacity-30' %>"></iconify-icon>
+                                                    <% } %>
+                                        </div>
+                                        <p class="text-muted">
+                                            <%= product.rating && product.rating.count ? product.rating.count : 0 %>
+                                                đánh giá
+                                        </p>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <% for (var star=5; star>= 1; star--) { %>
+                                            <% var ratingCount=product.rating && product.rating.distribution ?
+                                                (product.rating.distribution[star] || 0) : 0; var
+                                                totalCount=product.rating && product.rating.count ? product.rating.count
+                                                : 0; var percentage=totalCount> 0 ? (ratingCount / totalCount) * 100 :
+                                                0;
+                                                %>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-muted text-sm w-12">
+                                                        <%= star %> sao
+                                                    </span>
+                                                    <div class="flex-1 bg-dark rounded-full h-2 overflow-hidden">
+                                                        <div class="bg-gold h-full" style="width: <%= percentage %>%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-muted text-sm w-12 text-right">
+                                                        <%= ratingCount %>
+                                                    </span>
+                                                </div>
+                                                <% } %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Flash Messages -->
+                            <% if (typeof success_msg !=='undefined' && success_msg && success_msg.length> 0) { %>
+                                <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6">
+                                    <p class="text-green-400 text-sm">
+                                        <%= success_msg %>
+                                    </p>
+                                </div>
+                                <% } %>
+                                    <% if (typeof error_msg !=='undefined' && error_msg && error_msg.length> 0) { %>
+                                        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+                                            <p class="text-red-400 text-sm">
+                                                <%= error_msg %>
+                                            </p>
+                                        </div>
+                                        <% } %>
+
+                                            <!-- Write Review Form -->
+                                            <% if (typeof user !=='undefined' && user) { %>
+                                                <div class="glass-panel rounded-xl p-8 mb-8">
+                                                    <h4 class="text-lg font-medium text-white mb-6">Viết đánh giá của
+                                                        bạn</h4>
+                                                    <form action="/products/<%= product._id %>/reviews" method="POST"
+                                                        class="space-y-6">
+                                                        <!-- Rating -->
+                                                        <div>
+                                                            <label class="block text-sm text-muted mb-2">Xếp hạng
+                                                                *</label>
+                                                            <div class="flex gap-2">
+                                                                <% for (var r=1; r <=5; r++) { %>
+                                                                    <label class="cursor-pointer">
+                                                                        <input type="radio" name="rating"
+                                                                            value="<%= r %>" required
+                                                                            class="hidden peer">
+                                                                        <iconify-icon icon="lucide:star" width="24"
+                                                                            class="text-muted peer-checked:text-gold hover:text-gold/70 transition-colors"></iconify-icon>
+                                                                    </label>
+                                                                    <% } %>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Title -->
+                                                        <div>
+                                                            <label class="block text-sm text-muted mb-2">Tiêu đề</label>
+                                                            <input type="text" name="title"
+                                                                placeholder="Tóm tắt đánh giá của bạn"
+                                                                class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors">
+                                                        </div>
+
+                                                        <!-- Content -->
+                                                        <div>
+                                                            <label class="block text-sm text-muted mb-2">Nội dung đánh
+                                                                giá *</label>
+                                                            <textarea name="content" rows="4" required
+                                                                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                                                                class="w-full bg-dark border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none transition-colors resize-none"></textarea>
+                                                        </div>
+
+                                                        <button type="submit"
+                                                            class="bg-gold hover:bg-[#C5A354] text-dark font-bold py-3 px-8 rounded text-sm uppercase tracking-wide transition-colors">
+                                                            Gửi đánh giá
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <% } else { %>
+                                                    <div class="glass-panel rounded-xl p-6 mb-8 text-center">
+                                                        <p class="text-muted mb-4">Vui lòng đăng nhập để đánh giá sản
+                                                            phẩm</p>
+                                                        <a href="/auth/login"
+                                                            class="inline-block bg-gold hover:bg-[#C5A354] text-dark font-bold py-3 px-8 rounded text-sm uppercase tracking-wide transition-colors">
+                                                            Đăng nhập
+                                                        </a>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <!-- Reviews List -->
+                                                        <div class="space-y-6">
+                                                            <% if (product.reviews && product.reviews.length> 0) { %>
+                                                                <% product.reviews.forEach(review=> { %>
+                                                                    <div class="glass-panel rounded-xl p-6">
+                                                                        <div class="flex items-start gap-4">
+                                                                            <div
+                                                                                class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold flex-shrink-0">
+                                                                                <%= review.user && review.user.name ?
+                                                                                    review.user.name.charAt(0).toUpperCase()
+                                                                                    : 'U' %>
+                                                                            </div>
+                                                                            <div class="flex-1">
+                                                                                <div
+                                                                                    class="flex items-center justify-between mb-2">
+                                                                                    <div>
+                                                                                        <h5
+                                                                                            class="text-white font-medium">
+                                                                                            <%= review.user &&
+                                                                                                review.user.name ?
+                                                                                                review.user.name
+                                                                                                : 'Khách hàng' %>
+                                                                                        </h5>
+                                                                                        <div
+                                                                                            class="flex text-gold mt-1">
+                                                                                            <% for (var s=0; s < 5; s++)
+                                                                                                { %>
+                                                                                                <iconify-icon
+                                                                                                    icon="lucide:star"
+                                                                                                    width="14"
+                                                                                                    class="<%= s < review.rating ? '' : 'opacity-30' %>"></iconify-icon>
+                                                                                                <% } %>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <span class="text-muted text-sm">
+                                                                                        <%= new
+                                                                                            Date(review.createdAt).toLocaleDateString('vi-VN')
+                                                                                            %>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <% if (review.title) { %>
+                                                                                    <h6
+                                                                                        class="text-white font-medium mb-2">
+                                                                                        <%= review.title %>
+                                                                                    </h6>
+                                                                                    <% } %>
+                                                                                        <p
+                                                                                            class="text-muted leading-relaxed">
+                                                                                            <%= review.content %>
+                                                                                        </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }); %>
+                                                                        <% } else { %>
+                                                                            <div
+                                                                                class="glass-panel rounded-xl p-12 text-center">
+                                                                                <iconify-icon
+                                                                                    icon="lucide:message-square"
+                                                                                    width="48"
+                                                                                    class="text-muted mb-4"></iconify-icon>
+                                                                                <p class="text-muted">Chưa có đánh giá
+                                                                                    nào. Hãy là người đầu tiên đánh giá
+                                                                                    sản phẩm này!</p>
+                                                                            </div>
+                                                                            <% } %>
+                                                        </div>
+                        </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+
+            <script src="/js/main.js"></script>
+            <script>
+                var maxStock = <%= product.stock %>;
+                function changeQty(delta) {
+                    var input = document.getElementById('quantity');
+                    var newVal = parseInt(input.value) + delta;
+                    if (newVal >= 1 && newVal <= maxStock) input.value = newVal;
+                }
+            </script>
+</body>
+
+</html>

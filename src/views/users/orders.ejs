@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng của tôi | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="pt-32 pb-8 bg-navy">
+            <div class="container mx-auto px-6">
+                <h1 class="text-3xl md:text-4xl font-display font-semibold text-white">Đơn hàng của tôi</h1>
+                <p class="text-muted mt-2">Theo dõi và quản lý đơn hàng</p>
+            </div>
+        </section>
+
+        <section class="py-12 bg-dark min-h-[60vh]">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-4 gap-8">
+
+                    <!-- Sidebar -->
+                    <div class="lg:col-span-1">
+                        <div class="glass-panel rounded-2xl p-6 sticky top-32">
+                            <div class="text-center mb-6">
+                                <div
+                                    class="w-20 h-20 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <iconify-icon icon="lucide:user" class="text-gold text-3xl"></iconify-icon>
+                                </div>
+                                <h3 class="text-white font-medium">
+                                    <%= user.name %>
+                                </h3>
+                                <p class="text-muted text-sm">
+                                    <%= user.email %>
+                                </p>
+                            </div>
+                            <nav class="space-y-2">
+                                <a href="/users/profile"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:user-circle"></iconify-icon>Thông tin tài khoản
+                                </a>
+                                <a href="/users/orders"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gold/10 text-gold">
+                                    <iconify-icon icon="lucide:package"></iconify-icon>Đơn hàng
+                                </a>
+                                <a href="/users/wishlist"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:heart"></iconify-icon>Yêu thích
+                                </a>
+                                <a href="/users/addresses"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors">
+                                    <iconify-icon icon="lucide:map-pin"></iconify-icon>Địa chỉ
+                                </a>
+                                <div class="border-t border-white/10 my-4"></div>
+                                <a href="/auth/logout"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors">
+                                    <iconify-icon icon="lucide:log-out"></iconify-icon>Đăng xuất
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="lg:col-span-3">
+
+                        <!-- Filter Tabs -->
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <a href="/users/orders"
+                                class="px-4 py-2 rounded-lg text-sm font-medium <%= !status ? 'bg-gold text-dark' : 'bg-white/5 text-muted hover:text-white' %>">Tất
+                                cả</a>
+                            <a href="/users/orders?status=pending"
+                                class="px-4 py-2 rounded-lg text-sm font-medium <%= status === 'pending' ? 'bg-gold text-dark' : 'bg-white/5 text-muted hover:text-white' %>">Chờ
+                                xác nhận</a>
+                            <a href="/users/orders?status=confirmed"
+                                class="px-4 py-2 rounded-lg text-sm font-medium <%= status === 'confirmed' ? 'bg-gold text-dark' : 'bg-white/5 text-muted hover:text-white' %>">Đã
+                                xác nhận</a>
+                            <a href="/users/orders?status=shipping"
+                                class="px-4 py-2 rounded-lg text-sm font-medium <%= status === 'shipping' ? 'bg-gold text-dark' : 'bg-white/5 text-muted hover:text-white' %>">Đang
+                                giao</a>
+                            <a href="/users/orders?status=delivered"
+                                class="px-4 py-2 rounded-lg text-sm font-medium <%= status === 'delivered' ? 'bg-gold text-dark' : 'bg-white/5 text-muted hover:text-white' %>">Đã
+                                giao</a>
+                            <a href="/users/orders?status=cancelled"
+                                class="px-4 py-2 rounded-lg text-sm font-medium <%= status === 'cancelled' ? 'bg-gold text-dark' : 'bg-white/5 text-muted hover:text-white' %>">Đã
+                                hủy</a>
+                        </div>
+
+                        <% if (orders && orders.length> 0) { %>
+                            <div class="space-y-6">
+                                <% orders.forEach(function(order) { %>
+                                    <div class="glass-panel rounded-2xl p-6">
+                                        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+                                            <div>
+                                                <p class="text-gold font-mono font-medium">#<%= order.orderNumber %>
+                                                </p>
+                                                <p class="text-muted text-sm">
+                                                    <%= new Date(order.createdAt).toLocaleDateString('vi-VN') %>
+                                                </p>
+                                            </div>
+                                            <div class="text-right">
+                                                <% var statusLabels={ pending: { text: 'Chờ xác nhận' ,
+                                                    class: 'bg-yellow-500/20 text-yellow-400' }, confirmed: {
+                                                    text: 'Đã xác nhận' , class: 'bg-blue-500/20 text-blue-400' },
+                                                    processing: { text: 'Đang xử lý' ,
+                                                    class: 'bg-cyan-500/20 text-cyan-400' }, shipping: {
+                                                    text: 'Đang giao' , class: 'bg-purple-500/20 text-purple-400' },
+                                                    delivered: { text: 'Đã giao' ,
+                                                    class: 'bg-green-500/20 text-green-400' }, cancelled: {
+                                                    text: 'Đã hủy' , class: 'bg-red-500/20 text-red-400' } }; var
+                                                    statusInfo=statusLabels[order.status] || { text: order.status,
+                                                    class: 'bg-gray-500/20 text-gray-400' }; %>
+                                                    <span
+                                                        class="inline-block px-3 py-1 rounded-full text-xs font-medium <%= statusInfo.class %>">
+                                                        <%= statusInfo.text %>
+                                                    </span>
+                                                    <p class="text-white font-mono font-medium mt-2">
+                                                        <%= order.totalAmount.toLocaleString('vi-VN') %>₫
+                                                    </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="border-t border-white/10 pt-4">
+                                            <div class="flex flex-wrap gap-2">
+                                                <% order.items.slice(0, 3).forEach(function(item) { %>
+                                                    <div class="w-16 h-16 bg-navy rounded-lg overflow-hidden">
+                                                        <img src="<%= item.image || '/images/no-image.png' %>"
+                                                            alt="<%= item.name %>" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <% }); %>
+                                                        <% if (order.items.length> 3) { %>
+                                                            <div
+                                                                class="w-16 h-16 bg-navy rounded-lg flex items-center justify-center text-muted text-sm">
+                                                                +<%= order.items.length - 3 %>
+                                                            </div>
+                                                            <% } %>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-wrap gap-3 mt-4">
+                                            <a href="/orders/<%= order._id %>"
+                                                class="bg-white/10 hover:bg-white/20 text-white text-sm font-medium py-2 px-4 rounded-lg">Xem
+                                                chi tiết</a>
+                                            <% if (order.status==='pending' ) { %>
+                                                <button onclick="cancelOrder('<%= order._id %>')"
+                                                    class="bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium py-2 px-4 rounded-lg">Hủy
+                                                    đơn</button>
+                                                <% } %>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                            </div>
+
+                            <% if (totalPages> 1) { %>
+                                <div class="flex justify-center gap-2 mt-8">
+                                    <% for (var i=1; i <=totalPages; i++) { %>
+                                        <a href="?<%= status ? 'status=' + status + '&' : '' %>page=<%= i %>"
+                                            class="w-10 h-10 flex items-center justify-center border rounded <%= currentPage === i ? 'bg-gold border-gold text-dark font-bold' : 'border-white/10 text-muted hover:border-gold' %>">
+                                            <%= i %>
+                                        </a>
+                                        <% } %>
+                                </div>
+                                <% } %>
+                                    <% } else { %>
+                                        <div class="glass-panel rounded-2xl p-12 text-center">
+                                            <iconify-icon icon="lucide:package-x" width="64"
+                                                class="text-muted mb-6"></iconify-icon>
+                                            <h3 class="text-2xl font-display font-medium text-white mb-4">Chưa có đơn
+                                                hàng</h3>
+                                            <p class="text-muted mb-8">Bạn chưa có đơn hàng nào. Hãy mua sắm ngay!</p>
+                                            <a href="/products"
+                                                class="inline-flex items-center gap-2 bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 px-8 rounded text-sm uppercase tracking-wide">
+                                                <iconify-icon icon="lucide:shopping-bag"></iconify-icon>Mua sắm ngay
+                                            </a>
+                                        </div>
+                                        <% } %>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+            <script>
+                function cancelOrder(orderId) {
+                    if (confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                        fetch('/orders/' + orderId + '/cancel', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    location.reload();
+                                } else {
+                                    alert(data.message || 'Có lỗi xảy ra');
+                                }
+                            });
+                    }
+                }
+            </script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lỗi Server | CHRONOS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased min-h-screen flex items-center justify-center">
+    <div class="absolute inset-0 bg-gradient-to-b from-dark to-navy"></div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+        <div class="max-w-lg mx-auto">
+            <div class="w-24 h-24 mx-auto mb-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                <iconify-icon icon="lucide:alert-triangle" class="text-red-400 text-5xl"></iconify-icon>
+            </div>
+
+            <h1 class="text-6xl font-display font-bold text-red-400 mb-4">500</h1>
+            <h2 class="text-2xl md:text-3xl font-display font-semibold text-white mb-4">Lỗi Server</h2>
+            <p class="text-muted mb-8">Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.</p>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="/"
+                    class="inline-flex items-center justify-center gap-2 bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 px-8 rounded text-sm uppercase tracking-wide">
+                    <iconify-icon icon="lucide:home"></iconify-icon>Về trang chủ
+                </a>
+                <a href="javascript:location.reload()"
+                    class="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/20 text-white font-medium py-4 px-8 rounded text-sm uppercase tracking-wide hover:bg-white/10">
+                    <iconify-icon icon="lucide:refresh-cw"></iconify-icon>Thử lại
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

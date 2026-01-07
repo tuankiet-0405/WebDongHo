@@ -1,0 +1,144 @@
+<%- include('../partials/header', { currentPage: 'settings' }) %>
+
+    <!-- Page Header -->
+    <div class="animate-fade-in-up">
+        <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Cài đặt hệ thống</h1>
+        <p class="text-sm text-slate-500 mt-1">Cấu hình và tùy chỉnh hệ thống</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 100ms;">
+        <!-- General Settings -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:store" class="text-primary-600" width="20"></iconify-icon>
+                    Thông tin cửa hàng
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Tên cửa hàng</label>
+                        <input type="text" class="input-field" value="CHRONOS Watch Store" readonly>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Email liên hệ</label>
+                            <input type="email" class="input-field" value="contact@chronos.vn" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Hotline</label>
+                            <input type="text" class="input-field" value="1900 1234" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Địa chỉ</label>
+                        <input type="text" class="input-field" value="123 Nguyễn Huệ, Quận 1, TP.HCM" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:truck" class="text-primary-600" width="20"></iconify-icon>
+                    Vận chuyển
+                </h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Phí ship mặc định</label>
+                            <input type="number" class="input-field" value="30000" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Miễn ship từ</label>
+                            <input type="number" class="input-field" value="500000" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:credit-card" class="text-primary-600" width="20"></iconify-icon>
+                    Thanh toán
+                </h2>
+                <div class="space-y-3">
+                    <label
+                        class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:border-primary-300">
+                        <input type="checkbox" checked disabled class="rounded border-slate-300 text-primary-600">
+                        <div class="flex-1">
+                            <span class="font-medium text-slate-900">COD - Thanh toán khi nhận hàng</span>
+                        </div>
+                        <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Đang bật</span>
+                    </label>
+                    <label
+                        class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:border-primary-300">
+                        <input type="checkbox" checked disabled class="rounded border-slate-300 text-primary-600">
+                        <div class="flex-1">
+                            <span class="font-medium text-slate-900">Chuyển khoản ngân hàng</span>
+                        </div>
+                        <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Đang bật</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:shield" class="text-primary-600" width="20"></iconify-icon>
+                    Bảo mật
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-sm text-slate-600">Xác thực 2 lớp</span>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Tắt</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-sm text-slate-600">SSL Certificate</span>
+                        <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Hoạt động</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:database" class="text-primary-600" width="20"></iconify-icon>
+                    Hệ thống
+                </h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-600">Phiên bản</span>
+                        <span class="font-medium text-slate-900">1.0.0</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-600">Node.js</span>
+                        <span class="font-medium text-slate-900">v18.x</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-600">MongoDB</span>
+                        <span class="font-medium text-slate-900">v6.x</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-slate-600">Trạng thái</span>
+                        <span class="flex items-center gap-1.5 text-emerald-600">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Hoạt động
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-primary-900 to-primary-800 rounded-xl p-6 text-white">
+                <iconify-icon icon="lucide:info" width="24" class="mb-3"></iconify-icon>
+                <h3 class="font-semibold mb-2">Cần hỗ trợ?</h3>
+                <p class="text-sm text-blue-100 mb-4">Liên hệ đội ngũ kỹ thuật để được hỗ trợ cấu hình hệ thống.</p>
+                <a href="mailto:support@chronos.vn"
+                    class="inline-flex items-center gap-2 text-sm font-medium bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors">
+                    <iconify-icon icon="lucide:mail" width="16"></iconify-icon>
+                    Liên hệ hỗ trợ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>

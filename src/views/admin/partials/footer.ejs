@@ -1,0 +1,36 @@
+<!-- Footer -->
+<div
+    class="mt-8 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400 pb-4">
+    <p>&copy; 2024 CHRONOS Admin System. All rights reserved.</p>
+    <div class="flex items-center gap-4 mt-2 md:mt-0">
+        <span class="flex items-center gap-1.5">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> API: OK
+        </span>
+        <span>Phiên bản v1.0.0</span>
+    </div>
+</div>
+</div>
+</main>
+</div>
+
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    function toggleSidebar() {
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (isClosed) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden', 'opacity-0');
+            document.body.style.overflow = 'hidden';
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+</body>
+
+</html>

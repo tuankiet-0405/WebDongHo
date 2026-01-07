@@ -1,0 +1,156 @@
+<%- include('../partials/header', { currentPage: 'coupons' }) %>
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-primary-900">Quản lý mã giảm giá</h1>
+            <p class="text-sm text-slate-500 mt-1">Tổng cộng <span class="font-medium text-slate-700">
+                    <%= coupons.length %>
+                </span> mã</p>
+        </div>
+        <button onclick="document.getElementById('createModal').classList.remove('hidden')"
+            class="btn-primary flex items-center gap-2">
+            <iconify-icon icon="lucide:plus" width="18"></iconify-icon>
+            Tạo mã mới
+        </button>
+    </div>
+
+    <!-- Coupons Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up"
+        style="animation-delay: 100ms;">
+        <% if (coupons && coupons.length> 0) { %>
+            <% coupons.forEach(coupon=> { %>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-hover">
+                    <div class="p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <div
+                                class="bg-primary-50 text-primary-700 px-3 py-1.5 rounded-lg font-mono font-bold text-lg tracking-wide">
+                                <%= coupon.code %>
+                            </div>
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= coupon.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500' %>">
+                                <%= coupon.isActive ? 'Hoạt động' : 'Tạm dừng' %>
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-4">
+                            <%= coupon.description || 'Không có mô tả' %>
+                        </p>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-500">Giảm:</span>
+                                <span class="font-semibold text-slate-900">
+                                    <%= coupon.type==='percentage' ? coupon.value + '%' :
+                                        coupon.value.toLocaleString('vi-VN') + '₫' %>
+                                </span>
+                            </div>
+                            <% if (coupon.maxDiscount) { %>
+                                <div>
+                                    <span class="text-slate-500">Tối đa:</span>
+                                    <span class="font-semibold text-slate-900">
+                                        <%= coupon.maxDiscount.toLocaleString('vi-VN') %>₫
+                                    </span>
+                                </div>
+                                <% } %>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-500">
+                                HSD: <%= coupon.endDate ? new Date(coupon.endDate).toLocaleDateString('vi-VN')
+                                    : 'Không giới hạn' %>
+                            </span>
+                            <button onclick="deleteCoupon('<%= coupon._id %>')"
+                                class="text-red-600 hover:text-red-700 font-medium flex items-center gap-1">
+                                <iconify-icon icon="lucide:trash-2" width="14"></iconify-icon> Xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+                    <% } else { %>
+                        <div class="col-span-full text-center py-12 text-slate-400">
+                            <iconify-icon icon="lucide:ticket" width="48" class="mb-2"></iconify-icon>
+                            <p>Chưa có mã giảm giá nào</p>
+                        </div>
+                        <% } %>
+    </div>
+
+    <!-- Create Modal -->
+    <div id="createModal"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-slate-900">Tạo mã giảm giá mới</h2>
+                <button onclick="document.getElementById('createModal').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-600">
+                    <iconify-icon icon="lucide:x" width="20"></iconify-icon>
+                </button>
+            </div>
+            <form action="/admin/coupons" method="POST" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Mã giảm giá *</label>
+                    <input type="text" name="code" required class="input-field uppercase" placeholder="VD: SALE50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Mô tả</label>
+                    <input type="text" name="description" class="input-field" placeholder="Mô tả chiến dịch...">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Loại giảm giá</label>
+                        <select name="type" class="input-field">
+                            <option value="percentage">Phần trăm (%)</option>
+                            <option value="fixed">Số tiền cố định</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Giá trị *</label>
+                        <input type="number" name="value" required class="input-field" placeholder="10">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Giảm tối đa</label>
+                        <input type="number" name="maxDiscount" class="input-field" placeholder="500000">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Đơn tối thiểu</label>
+                        <input type="number" name="minOrderValue" class="input-field" placeholder="1000000">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ngày bắt đầu</label>
+                        <input type="date" name="startDate" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ngày kết thúc</label>
+                        <input type="date" name="endDate" class="input-field">
+                    </div>
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="isActive" value="true" checked
+                        class="rounded border-slate-300 text-primary-600">
+                    <span class="text-sm text-slate-700">Kích hoạt ngay</span>
+                </label>
+                <button type="submit" class="w-full btn-primary py-2.5">Tạo mã giảm giá</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function deleteCoupon(id) {
+            if (!confirm('Bạn có chắc muốn xóa mã giảm giá này?')) return;
+            try {
+                const res = await fetch(`/admin/coupons/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (e) {
+                alert('Có lỗi xảy ra');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

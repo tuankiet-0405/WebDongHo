@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt hàng thành công | CHRONOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070A12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#070A12', navy: '#0B1020', gold: '#D6B25E', cyan: '#22D3EE', offwhite: '#EAEAF0', muted: '#9AA3B2' }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
+</head>
+
+<body class="bg-dark text-offwhite font-sans antialiased">
+    <%- include('../partials/header') %>
+
+        <section class="min-h-screen flex items-center justify-center py-20 relative">
+            <div class="absolute inset-0 bg-gradient-to-b from-dark to-navy"></div>
+
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <!-- Success Icon -->
+                    <div class="w-24 h-24 mx-auto mb-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                        <iconify-icon icon="lucide:check-circle" class="text-green-400 text-5xl"></iconify-icon>
+                    </div>
+
+                    <h1 class="text-3xl md:text-4xl font-display font-semibold text-white mb-4">Đặt hàng thành công!
+                    </h1>
+                    <p class="text-muted text-lg mb-8">Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng trong thời
+                        gian sớm nhất.</p>
+
+                    <!-- Order Info -->
+                    <div class="glass-panel rounded-xl p-8 mb-8 text-left">
+                        <div class="flex justify-between items-center mb-6 pb-6 border-b border-white/10">
+                            <div>
+                                <p class="text-muted text-sm">Mã đơn hàng</p>
+                                <p class="text-2xl font-mono font-bold text-gold">
+                                    <%= order.orderNumber %>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-muted text-sm">Ngày đặt</p>
+                                <p class="text-white">
+                                    <%= new Date(order.createdAt).toLocaleDateString('vi-VN') %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <h4 class="text-muted text-sm mb-2">Thông tin nhận hàng</h4>
+                                <p class="text-white font-medium">
+                                    <%= order.customer.name %>
+                                </p>
+                                <p class="text-muted text-sm">
+                                    <%= order.customer.phone %>
+                                </p>
+                                <p class="text-muted text-sm">
+                                    <%= order.customer.email %>
+                                </p>
+                            </div>
+                            <div>
+                                <h4 class="text-muted text-sm mb-2">Địa chỉ giao hàng</h4>
+                                <p class="text-muted text-sm">
+                                    <%= order.shippingAddress.address %>
+                                </p>
+                                <p class="text-muted text-sm">
+                                    <%= order.shippingAddress.ward %>, <%= order.shippingAddress.district %>
+                                </p>
+                                <p class="text-muted text-sm">
+                                    <%= order.shippingAddress.city %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-white/10 pt-6">
+                            <h4 class="text-muted text-sm mb-4">Sản phẩm đã đặt</h4>
+                            <div class="space-y-3 mb-6">
+                                <% order.items.forEach(item=> { %>
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 bg-navy rounded overflow-hidden">
+                                                <img src="<%= item.image %>" alt=""
+                                                    class="w-full h-full object-contain">
+                                            </div>
+                                            <div>
+                                                <p class="text-white text-sm">
+                                                    <%= item.name %>
+                                                </p>
+                                                <p class="text-muted text-xs">x<%= item.quantity %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p class="text-gold font-mono">
+                                            <%= item.subtotal.toLocaleString('vi-VN') %>₫
+                                        </p>
+                                    </div>
+                                    <% }); %>
+                            </div>
+
+                            <div class="flex justify-between text-lg">
+                                <span class="text-white font-medium">Tổng thanh toán</span>
+                                <span class="text-2xl font-mono font-bold text-gold">
+                                    <%= order.totalAmount.toLocaleString('vi-VN') %>₫
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-4 justify-center">
+                        <a href="/orders/track?orderNumber=<%= order.orderNumber %>&email=<%= order.customer.email %>"
+                            class="inline-flex items-center justify-center gap-2 bg-gold hover:bg-[#C5A354] text-dark font-bold py-4 px-8 rounded text-sm uppercase tracking-wide transition-colors">
+                            <iconify-icon icon="lucide:package"></iconify-icon>
+                            Theo dõi đơn hàng
+                        </a>
+                        <a href="/products"
+                            class="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/20 text-white font-medium py-4 px-8 rounded text-sm uppercase tracking-wide transition-colors hover:bg-white/10">
+                            Tiếp tục mua sắm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

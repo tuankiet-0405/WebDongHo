@@ -5,7 +5,7 @@ node_modules/
 .env
 .env.local
 .env.production
-
+.history
 # Logs
 logs/
 *.log
